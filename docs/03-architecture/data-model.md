@@ -13,6 +13,7 @@ Representa un incidente reportado en la planta.
 - created_by: integer (FK → User)
 - assigned_to: integer (FK → User, nullable)
 - closed_by: integer (FK → User, nullable)
+- closed_at: datetime
 
 #### Estados del incidente
 
