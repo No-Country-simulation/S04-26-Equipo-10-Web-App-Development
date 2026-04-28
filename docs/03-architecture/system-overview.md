@@ -41,8 +41,22 @@ El sistema está compuesto por tres capas principales:
 
 ### Frontend
 
-Aplicación web desarrollada en React.
-Permite a los usuarios interactuar con el sistema desde dispositivos móviles y de escritorio.
+Framework: React + Vite
+Estilos: Tailwind CSS
+Componentes: Shadcn
+Librerías: Zustand, React Hook Form + Zod, Recharts.
+Estructura de carpeta básica propuesta:
+src/
+├── components/
+│   ├── ui/               
+│   └── shared/           
+├── features/
+│   ├── reporting/         
+│   ├── assignment/        
+│   ├── workflow/          
+│   └── dashboard/         
+├── hooks/                 
+└── store/                 
 
 ### Backend
 
