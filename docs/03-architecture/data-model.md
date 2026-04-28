@@ -57,7 +57,6 @@ Representa un area de la empresa.
 
 - id: integer (PK)
 - name: string
-- description: text
 
 #### Reglas
 
