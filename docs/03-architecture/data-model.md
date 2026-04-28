@@ -61,3 +61,6 @@ Representa la resolución de un incidente.
 
 - Un User puede crear muchos Incidents
 - Un User puede ser asignado a muchos Incidents
+- Una Resolution solo puede tener asignada un Incidents
+- Un Insident puede no tener asignado una Resolution
+- Un Insident puede tener asignado un maximo de una Resolution
