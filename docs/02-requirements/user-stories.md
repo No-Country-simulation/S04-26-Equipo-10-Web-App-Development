@@ -1,28 +1,43 @@
-# User Stories - Sistema de Gestión de Incidentes
+# 📌 User Stories - Sistema de Gestión de Incidentes (Refinadas)
 
 ---
 
-## 1. Creación de incidentes
+## 🟢 1. Creación de incidentes
 
-### US-01 - Crear incidente
+### US-01 - Registrar incidente (backend)
 
 **Como** operador  
-**Quiero** registrar un incidente desde mi celular  
-**Para** reportar rápidamente un problema en la línea
+**Quiero** enviar los datos de un incidente  
+**Para** que quede registrado en el sistema
 
 **Criterios de aceptación:**
 
-- Puede ingresar:
+- Recibe:
   - tipo de incidente
   - área
   - descripción
 - El incidente se guarda con estado `CREADO`
-- Se registra fecha/hora automáticamente
-- El formulario es usable desde dispositivos móviles
+- Se registra `created_at`
 
 ---
 
-### US-02 - Validación de datos
+### US-02 - Formulario de incidente (frontend)
+
+**Como** operador  
+**Quiero** completar un formulario  
+**Para** cargar un incidente fácilmente
+
+**Criterios de aceptación:**
+
+- Campos:
+  - tipo
+  - área
+  - descripción
+- Botón de envío disponible
+
+---
+
+### US-03 - Validación de datos
 
 **Como** sistema  
 **Quiero** validar los datos ingresados  
@@ -38,56 +53,93 @@
 
 ---
 
-## 2. Asignación
+### US-04 - Feedback de creación
 
-### US-03 - Asignar incidente
-
-**Como** supervisor  
-**Quiero** asignar un incidente a un técnico  
-**Para** que alguien se responsabilice de resolverlo
+**Como** operador  
+**Quiero** recibir confirmación  
+**Para** saber que el incidente fue registrado
 
 **Criterios de aceptación:**
 
-- Puede seleccionar un usuario técnico
-- El estado cambia a `ASIGNADO`
-- Se registra `assigned_at`
+- Mensaje de éxito al crear
+- Limpieza del formulario
 
 ---
 
-### US-04 - Reasignar incidente
+## 🟡 2. Asignación
+
+### US-05 - Listar técnicos
 
 **Como** supervisor  
-**Quiero** reasignar un incidente  
+**Quiero** ver los técnicos disponibles  
+**Para** poder asignar un incidente
+
+**Criterios de aceptación:**
+
+- Lista de usuarios con rol técnico
+
+---
+
+### US-06 - Asignar incidente
+
+**Como** supervisor  
+**Quiero** asignar un técnico a un incidente  
+**Para** delegar su resolución
+
+**Criterios de aceptación:**
+
+- Se selecciona un técnico
+- Se guarda asignación (`assigned_to`)
+- Se registra `assigned_at`
+- El estado cambia a `ASIGNADO`
+
+---
+
+### US-07 - Reasignar incidente
+
+**Como** supervisor  
+**Quiero** cambiar el técnico asignado  
 **Para** redistribuir la carga de trabajo
 
 **Criterios de aceptación:**
 
-- Se puede cambiar el técnico asignado
-- (Opcional) Se mantiene historial de asignaciones
+- Se puede cambiar el técnico
+- El incidente mantiene consistencia de estado
 
 ---
 
-## 3. Seguimiento
+## 🟡 3. Seguimiento
 
-### US-05 - Cambiar estado
+### US-08 - Iniciar trabajo
 
 **Como** técnico  
-**Quiero** actualizar el estado del incidente  
-**Para** reflejar el progreso
+**Quiero** marcar un incidente como `EN_PROCESO`  
+**Para** indicar que estoy trabajando en él
 
 **Criterios de aceptación:**
 
-- Estados permitidos:
-  - `EN_PROCESO`
-  - `RESUELTO`
-- (Opcional) No se pueden saltar estados arbitrariamente
+- Solo incidentes `ASIGNADO` pueden pasar a `EN_PROCESO`
+- Se actualiza el estado correctamente
 
 ---
 
-### US-06 - Ver incidentes
+### US-09 - Validar transición de estados
+
+**Como** sistema  
+**Quiero** controlar los cambios de estado  
+**Para** evitar inconsistencias
+
+**Criterios de aceptación:**
+
+- No se permiten saltos inválidos de estado
+- Se devuelve error ante transición inválida
+
+---
+
+### US-10 - Visualizar incidentes
 
 **Como** supervisor  
-**Quiero** ver todos los incidentes  
+**Quiero** ver la lista de incidentes  
 **Para** monitorear el estado general
 
 **Criterios de aceptación:**
@@ -99,71 +151,78 @@
   - responsable
 - Filtros por:
   - estado
-  - fecha
   - área
+  - fecha
 
 ---
 
-## 4. Resolución
+## 🔵 4. Resolución
 
-### US-07 - Resolver incidente
+### US-11 - Registrar solución
 
 **Como** técnico  
-**Quiero** registrar la solución aplicada  
-**Para** cerrar el incidente correctamente
+**Quiero** guardar la solución aplicada  
+**Para** documentar la resolución del incidente
 
 **Criterios de aceptación:**
 
-- Puede ingresar:
-  - solución
-  - causa raíz
-- El estado cambia a `RESUELTO`
-- Se registra `resolved_at`
+- Campo de texto para solución
+- Se guarda correctamente
 
 ---
 
-### US-08 - Cerrar incidente
+### US-12 - Registrar causa raíz
 
-**Como** supervisor  
+**Como** técnico  
+**Quiero** registrar la causa raíz  
+**Para** permitir análisis posterior
+
+**Criterios de aceptación:**
+
+- Campo de causa raíz obligatorio
+- Se guarda asociado al incidente
+
+---
+
+### US-13 - Marcar incidente como resuelto
+
+**Como** técnico  
+**Quiero** marcar el incidente como `RESUELTO`  
+**Para** indicar que el problema fue solucionado
+
+**Criterios de aceptación:**
+
+- Solo incidentes `EN_PROCESO`
+- Se registra `resolved_at`
+- Estado cambia a `RESUELTO`
+
+---
+
+### US-14 - Cerrar incidente
+
+**Como** gerente  
 **Quiero** cerrar un incidente resuelto  
 **Para** confirmar que está finalizado
 
 **Criterios de aceptación:**
 
-- Solo incidentes en estado `RESUELTO` pueden cerrarse
-- El estado final es `CERRADO`
+- Solo incidentes `RESUELTO`
+- Estado cambia a `CERRADO`
+- Se registra `closed_at`
 
 ---
 
-## 5. Métricas y análisis
+## 🧠 5. Sistema (soporte interno)
 
-### US-09 - Ver métricas
+### US-15 - Manejo de errores
 
-**Como** gerente  
-**Quiero** visualizar métricas de incidentes  
-**Para** evaluar el desempeño operativo
-
-**Criterios de aceptación:**
-
-- Visualización de:
-  - tiempo promedio de respuesta
-  - tiempo promedio de resolución
-  - incidentes por tipo
-  - incidentes por área
-
----
-
-### US-10 - Análisis de causa raíz
-
-**Como** gerente  
-**Quiero** analizar las causas raíz de los incidentes  
-**Para** identificar patrones recurrentes
+**Como** sistema  
+**Quiero** devolver errores claros  
+**Para** facilitar el uso y debugging
 
 **Criterios de aceptación:**
 
-- Agrupación por:
-  - tipo
-  - área
-- Visualización por períodos (semanal/mensual)
+- Mensajes de error consistentes
+- Códigos de error identificables
 
 ---

@@ -1,4 +1,4 @@
-### Incident
+## Incident
 
 Representa un incidente reportado en la planta.
 
@@ -14,6 +14,14 @@ Representa un incidente reportado en la planta.
 - assigned_to: integer (FK → User, nullable)
 - closed_by: integer (FK → User, nullable)
 
+#### Estados del incidente
+
+- CREADO
+- ASIGNADO
+- EN_PROCESO
+- RESUELTO
+- CERRADO
+
 #### Reglas
 
 - El estado inicial es `CREADO`
@@ -21,7 +29,7 @@ Representa un incidente reportado en la planta.
 
 ---
 
-### User
+## User
 
 Representa un usuario del sistema.
 
@@ -37,7 +45,7 @@ Representa un usuario del sistema.
 
 ---
 
-### Resolution
+## Resolution
 
 Representa la resolución de un incidente.
 
@@ -48,15 +56,7 @@ Representa la resolución de un incidente.
 - solution: text
 - root_cause: string
 
-## Relaciones
+# Relaciones
 
 - Un User puede crear muchos Incidents
 - Un User puede ser asignado a muchos Incidents
-
-## Estados del incidente
-
-- CREADO
-- ASIGNADO
-- EN_PROCESO
-- RESUELTO
-- CERRADO
