@@ -6,7 +6,7 @@ Representa un incidente reportado en la planta.
 
 - id: integer (PK)
 - type: string
-- area: string
+- area: integer (FK → Area) 
 - description: text
 - status: enum
 - created_at: datetime
@@ -27,6 +27,7 @@ Representa un incidente reportado en la planta.
 
 - El estado inicial es `CREADO`
 - Solo puede cerrarse si está en `RESUELTO`
+- Un Incident solo puede tener un area asignada
 
 ---
 
@@ -39,13 +40,30 @@ Representa un usuario del sistema.
 - id: integer (PK)
 - name: string
 - role: enum (OPERATOR, SUPERVISOR, TECHNICIAN, MANAGER)
+- area: integer (FK → Area) 
 
 #### Reglas
 
-- Un usuario debe tener un único rol
+- Un User debe tener un único rol
+- Un User solo puede tener un area asignada
 
 ---
 
+## Area
+
+Representa un area de la empresa.
+
+#### Campos
+
+- id: integer (PK)
+- name: string
+- description: text
+
+#### Reglas
+
+- 
+
+---
 ## Resolution
 
 Representa la resolución de un incidente.
@@ -56,6 +74,12 @@ Representa la resolución de un incidente.
 - incident_id: integer (FK → Incident)
 - solution: text
 - root_cause: string
+  
+#### Reglas
+
+- 
+
+---
 
 # Relaciones
 
