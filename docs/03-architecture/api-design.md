@@ -155,3 +155,98 @@ Obtiene un usuario por ID.
 "name": "Juan",
 "role": "TECHNICIAN"
 }
+
+# Metricas
+
+## GET /metrics/overview
+
+Resumen general
+
+### Response:
+
+{
+"total_incidents": 120,
+"open_incidents": 35,
+"closed_incidents": 85,
+"avg_resolution_time_hours": 6.5
+}
+
+## GET /metrics/by-area
+
+Incidentes por área
+
+### Response:
+
+[
+{
+"area": "Producción",
+"total": 50,
+"open": 10,
+"closed": 40
+}
+]
+
+## GET /metrics/by-status
+
+Distribución por estado
+
+### Response:
+
+{
+"CREADO": 10,
+"ASIGNADO": 15,
+"EN_PROCESO": 10,
+"RESUELTO": 5,
+"CERRADO": 80
+}
+
+## GET /metrics/resolution-time
+
+Tiempo de resolución
+
+### Query params:
+
+area
+technician
+date_from
+date_to
+
+### Response:
+
+{
+"avg_hours": 5.2,
+"max_hours": 12,
+"min_hours": 1.5
+}
+
+**Esto se calcula con:
+closed_at - created_at**
+
+## GET /metrics/technicians-performance
+
+Performance por técnico
+
+### Response:
+
+[
+{
+"technician_id": 5,
+"name": "Carlos",
+"resolved_incidents": 30,
+"avg_resolution_time": 4.2
+}
+]
+
+## GET /metrics/incidents-trend
+
+Incidentes en el tiempo
+
+### Query params:
+
+group_by: day | week | month
+[
+{
+"date": "2026-04-01",
+"count": 12
+}
+]
