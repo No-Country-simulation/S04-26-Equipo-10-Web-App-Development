@@ -49,7 +49,7 @@ Se utiliza una estrategia basada en **feature branches**.
 
 ## 🔄 Flujo de trabajo
 
-1. Crear una rama
+1. Crear una rama desde DEVELOP
 
    ```
    git branch feature/*funcionalidad
