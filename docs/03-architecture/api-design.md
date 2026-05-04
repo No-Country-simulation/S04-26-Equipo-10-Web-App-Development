@@ -1,56 +1,53 @@
-# 📌 Incidents API
+# Incidents API
 
 ---
 
-## 📄 GET /incidents
-
-Lista todos los incidentes.
-
-### Query params (opcionales)
-
-- `status`
-- `area`
-- `from_date`
-- `to_date`
-
-### Response
-
-[
-{
-"id": 1,
-"type": "machine_failure",
-"area": "linea_1",
-"status": "CREADO",
-"assigned_to": 5,
-"created_at": "timestamp"
-}
-]
-
----
-
-## 🟢 POST /incidents
-
-Crea un nuevo incidente.
+## POST /login
 
 ### Body
 
 {
-"type": "machine_failure",
-"area": "linea_1",
+"name": "juan"
+"password": "12345"
+}
+
+### Response
+
+{
+"token": "abc123"
+}
+
+_El token debe estar en el header "autorization" en cada request posterior al login, asi lo validamos y podemos devover y validar rutas_
+
+## GET /incidents
+
+Lista todos los incidentes
+
+### Response
+
+_Array de objetos con los incidentes_
+
+---
+
+## POST /incidents
+
+Crea un nuevo incidente
+
+### Body
+
+{
+"type": 1 (type.id),
+"area": 1 (area.id),
 "description": "La máquina se detuvo"
 }
 
 ### Response
 
-{
-"id": 1,
-"status": "CREADO",
-"created_at": "timestamp"
-}
+Los post solo reciben el codigo 201 creado, excepto el login que envia el token
 
 ---
 
-## 🟡 PATCH /incidents/:id/assign
+## PATCH /incidents/:id/assign
 
 Asigna un incidente a un técnico.
 
@@ -66,12 +63,11 @@ Asigna un incidente a un técnico.
 "message": "Incident assigned successfully",
 "assigned_to": 5,
 "assigned_at": "timestamp",
-"status": "ASIGNADO"
 }
 
 ---
 
-## 🔄 PATCH /incidents/:id/status
+## PATCH /incidents/:id/status
 
 Actualiza el estado de un incidente.
 
@@ -83,30 +79,34 @@ Actualiza el estado de un incidente.
 
 ---
 
-## 🔁 Estados del sistema
+## Estados del sistema
 
 CREADO → ASIGNADO → EN_PROCESO → RESUELTO → CERRADO
 
 ---
 
-## 👥 Permisos por rol
+## Permisos por rol
 
 - **Operador**
   - Crear incidentes
+  - Ver incidentes
 
 - **Supervisor**
   - Asignar incidentes
+  - Ver incidentes
 
 - **Técnico**
   - Cambiar estado a `EN_PROCESO`
   - Cambiar estado a `RESUELTO`
+  - Ver incidentes asignados a él
 
 - **Gerente**
   - Cambiar estado a `CERRADO`
+  - Ver métricas
 
 ---
 
-## ⚠️ Validaciones
+## Validaciones
 
 - No se puede cerrar un incidente si no está en `RESUELTO`
 - No se puede marcar como `RESUELTO` si no está en `EN_PROCESO`
@@ -115,46 +115,43 @@ CREADO → ASIGNADO → EN_PROCESO → RESUELTO → CERRADO
 
 ---
 
-## ❌ Errores (formato estándar)
+# Users API
 
-{
-"error": "INVALID_STATE",
-"message": "No se puede cerrar un incidente no resuelto"
-}
-
----
-
-# 👥 Users API
-
----
-
-## 📄 GET /users
+## GET /users
 
 Lista todos los usuarios.
 
 ### Response
 
-[
-{
-"id": 1,
-"name": "Juan",
-"role": "TECHNICIAN"
-}
-]
+Array de objetos con los usuarios y sus datos
 
 ---
 
-## 📄 GET /users/:id
+## GET /users/:id
 
 Obtiene un usuario por ID.
 
 ### Response
 
+Objeto correspondiente al usuario
+
+## POST /users
+
+Crea un usuario, protegida
+
+### Body
+
 {
-"id": 1,
-"name": "Juan",
-"role": "TECHNICIAN"
+"name": "pepe",
+"lastname": "gómez",
+"password": "12345",
+"role": 1 (role.id),
+"area": 2 (area.id)
 }
+
+### Response
+
+Responde con un 201 creado o en su defecto estatus de error
 
 # Metricas
 
@@ -193,11 +190,11 @@ Distribución por estado
 ### Response:
 
 {
-"CREADO": 10,
-"ASIGNADO": 15,
-"EN_PROCESO": 10,
-"RESUELTO": 5,
-"CERRADO": 80
+"CREATED": 10,
+"ASSIGNED": 15,
+"IN_PROCESS": 10,
+"SOLVED": 5,
+"CLOSED": 80
 }
 
 ## GET /metrics/resolution-time
@@ -206,10 +203,7 @@ Tiempo de resolución
 
 ### Query params:
 
-area
-technician
-date_from
-date_to
+area (area.id)
 
 ### Response:
 
@@ -237,16 +231,4 @@ Performance por técnico
 }
 ]
 
-## GET /metrics/incidents-trend
-
-Incidentes en el tiempo
-
-### Query params:
-
-group_by: day | week | month
-[
-{
-"date": "2026-04-01",
-"count": 12
-}
-]
+## POST

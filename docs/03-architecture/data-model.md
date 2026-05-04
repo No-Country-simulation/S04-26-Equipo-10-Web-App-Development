@@ -5,23 +5,15 @@ Representa un incidente reportado en la planta.
 #### Campos
 
 - id: integer (PK)
-- type: string
-- area: integer (FK → Area)
+- type: integer (FK -> type.id)
+- area: integer (FK -> area.id)
 - description: text
-- status: enum
+- status: integer (FK -> status.id)
 - created_at: datetime
-- created_by: integer (FK → User)
+- created_by: integer (FK → user.id)
 - assigned_to: integer (FK → User, nullable)
 - closed_by: integer (FK → User, nullable)
-- closed_at: datetime
-
-#### Estados del incidente
-
-- CREADO
-- ASIGNADO
-- EN_PROCESO
-- RESUELTO
-- CERRADO
+- closed_at: datetime (nulleable)
 
 #### Reglas
 
@@ -39,8 +31,10 @@ Representa un usuario del sistema.
 
 - id: integer (PK)
 - name: string
-- role: enum (OPERATOR, SUPERVISOR, TECHNICIAN, MANAGER)
-- area: integer (FK → Area)
+- lastname: string
+- password: string
+- role: (FK -> role.id)
+- area: integer (FK -> area.id)
 
 #### Reglas
 
@@ -48,6 +42,8 @@ Representa un usuario del sistema.
 - Un User solo puede tener un area asignada
 
 ---
+
+# Campos requeridos para mediciones
 
 ## Area
 
@@ -58,12 +54,6 @@ Representa un area de la empresa.
 - id: integer (PK)
 - name: string
 
-#### Reglas
-
--
-
----
-
 ## Resolution
 
 Representa la resolución de un incidente.
@@ -71,9 +61,53 @@ Representa la resolución de un incidente.
 #### Campos
 
 - id: integer (PK)
-- incident_id: integer (FK → Incident)
+- incident_id: integer (FK → incident.id)
 - solution: text
-- root_cause: string
+- root_cause: integer (FK -> root_cause.id)
+
+---
+
+## Types
+
+Representa un tipo de incidente
+
+#### Campos
+
+- id: integer (PK)
+- name: string
+
+---
+
+## Roles
+
+representa el rol que tiene el usuario, no es modificado en runtime
+
+#### Campos
+
+- id: integer (PK)
+- name: string
+
+---
+
+## Root_causes
+
+Representa la causa raiz de un incidente
+
+#### Campos
+
+- id: integer (PK)
+- name: string
+
+---
+
+## Status
+
+Representa el estado de un incidente, no puede ser modificado en runtime
+
+#### Campos
+
+- id: integer (PK)
+- name: string
 
 ---
 
