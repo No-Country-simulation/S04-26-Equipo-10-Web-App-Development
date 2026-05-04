@@ -231,4 +231,121 @@ Performance por técnico
 }
 ]
 
-## POST
+## POST /resolutions
+
+Crea una resolucion para un ticket.
+
+### Body
+
+{
+"incident_id": 1,
+"solution": "Se cambio el laser de la impresora",
+"root_cause_id": 1
+}
+
+## GET /resolutions
+
+Arreglo de objetos con las resoluciones
+
+## PATCH /resolutions/:id
+
+Modifica una resolucion
+
+### Body
+
+{
+"solution": "Se cambio el laser y la tinta de la impresora",
+"root_cause_id": 2
+}
+
+## Area
+
+Representa un área de la empresa.
+
+### GET /areas
+
+Devuelve la lista completa de áreas.
+
+### GET /areas/:id
+
+Devuelve una única área.
+
+### POST /areas
+
+Crea una nueva área.
+
+#### Body
+
+{
+"name": "IT"
+}
+
+### PATCH /areas/:id
+
+Actualiza el area
+
+#### Body
+
+{
+"name": "Nuevo nombre"
+}
+
+## Types
+
+Representa un tipo de incidente.
+
+### GET /types
+
+Array de objetos con los tipos
+
+### GET /types/:id
+
+Devuelve un tipo por id
+
+### POST /types
+
+Body:
+
+{
+"name": "Bug"
+}
+
+### PATCH /types/:id
+
+Modifica un tipo
+
+### Body
+
+{
+"name": "Nuevo tipo"
+}
+
+## Root Causes
+
+Representa la causa raíz de un incidente.
+
+### GET /root-causes
+
+Obtiene las causas raices
+
+### GET /root-causes/:id
+
+obtiene la causa raiz por id
+
+### POST /root-causes
+
+#### Body
+
+{
+"name": "Falla de red"
+}
+
+### PATCH /root-causes/:id
+
+Actualiza una causa raiz
+
+#### Body
+
+{
+"name": "Nueva causa"
+}
