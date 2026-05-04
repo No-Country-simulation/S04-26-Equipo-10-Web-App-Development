@@ -15,9 +15,9 @@ Facilita la trazabilidad completa desde la detección hasta el cierre, incluyend
 ## Actores
 
 - Operador: crea incidentes
-- Supervisor: asigna y monitorea
+- Supervisor: asigna técnicos, monitorea y cierra incidentes
 - Técnico: resuelve incidentes
-- Gerente: analiza métricas y cierra incidentes
+- Gerente: analiza métricas
 
 ## Flujo principal
 
@@ -25,7 +25,8 @@ Facilita la trazabilidad completa desde la detección hasta el cierre, incluyend
 2. El supervisor lo asigna a un técnico
 3. El técnico comienza el trabajo (`EN_PROCESO`)
 4. El técnico registra la solución (`RESUELTO`)
-5. El gerente valida y cierra el incidente (`CERRADO`)
+5. El supervisor valida y cierra el incidente (`CERRADO`)
+6. EL gerente observa el análisis semanal de causas
 
 ## Estados del incidente
 
