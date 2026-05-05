@@ -16,6 +16,11 @@ CREATE TABLE IF NOT EXISTS areas (
     name TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS statuses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL DEFAULT 'CREADO'
+);
+
 CREATE TABLE IF NOT EXISTS types (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL
@@ -42,7 +47,7 @@ CREATE TABLE IF NOT EXISTS incidents (
     type_id INTEGER NOT NULL,
     area_id INTEGER NOT NULL,
     description TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'CREADO',
+    status_id INTEGER NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by INTEGER NOT NULL,
     assigned_to INTEGER,
@@ -52,6 +57,7 @@ CREATE TABLE IF NOT EXISTS incidents (
     CHECK (status IN ('CREADO', 'ASIGNADO', 'EN_PROCESO', 'RESUELTO', 'CERRADO')),
     FOREIGN KEY (type_id) REFERENCES types (id),
     FOREIGN KEY (area_id) REFERENCES areas (id),
+    FOREIGN KEY (status_id) REFERENCES statuses (id),
     FOREIGN KEY (created_by) REFERENCES users (id),
     FOREIGN KEY (assigned_to) REFERENCES users (id),
     FOREIGN KEY (closed_by) REFERENCES users (id)
