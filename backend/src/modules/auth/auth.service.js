@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
-export class AuthService {
+export default class AuthService {
 	constructor(AuthRepository) {
 		this.AuthRepository = AuthRepository
 	}
