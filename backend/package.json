@@ -1,18 +1,20 @@
 {
-	"name": "OpsCore",
+	"name": "opscore-backend",
 	"version": "1.0.0",
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "node --watch index.js",
-		"start": "node ./src/index.js"
+		"dev": "node --watch ./src/index.js",
+		"start": "node ./src/index.js",
+		"migrate": "node ./scripts/migrate.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"description": "",
 	"dependencies": {
-		"express": "^5.2.1"
+		"express": "^5.2.1",
+		"sqlite3": "^6.0.1"
 	}
 }
