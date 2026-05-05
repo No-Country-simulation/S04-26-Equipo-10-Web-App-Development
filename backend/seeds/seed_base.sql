@@ -34,12 +34,12 @@ INSERT OR IGNORE INTO users (name, lastname, password, role_id, area_id) VALUES
 ('Ana', 'Lopez', '123456', 1, 2),
 
 -- Technicians
-('Carlos', 'Tech', '123456', 2, 1),
-('Laura', 'Fix', '123456', 2, 3),
+('Carlos', 'Gomez', '123456', 2, 1),
+('Laura', 'Martin', '123456', 2, 3),
 
 -- Supervisors
-('Sofia', 'Lead', '123456', 3, 2),
-('Miguel', 'Boss', '123456', 3, 4),
+('Sofia', 'Rodriguez', '123456', 3, 2),
+('Miguel', 'Gonzales', '123456', 3, 4),
 
 -- Managers
 ('CEO', 'Uno', '123456', 4, 1),
