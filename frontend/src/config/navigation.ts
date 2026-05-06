@@ -1,5 +1,5 @@
 import { AlertTriangle, ClipboardList, LayoutDashboard, Users, Wrench } from 'lucide-react';
-import type { Role } from '../store/authStore';
+import type { UserRole } from '../store/authStore';
 
 export interface NavItem {
   label: string;
@@ -7,7 +7,7 @@ export interface NavItem {
   icon: any; // Lucide icon
 }
 
-export const ROLE_NAVIGATION: Record<Role, NavItem[]> = {
+export const ROLE_NAVIGATION: Record<UserRole, NavItem[]> = {
   Operador: [
     { label: 'Reportar incidente', path: '/reportar', icon: AlertTriangle },
     { label: 'Mis reportes', path: '/mis-reportes', icon: ClipboardList },

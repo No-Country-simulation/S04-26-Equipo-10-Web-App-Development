@@ -1,21 +1,62 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-export type Role = 'Operador' | 'Supervisor' | 'Técnico' | 'Gerente';
+export type UserRole = 'Operador' | 'Supervisor' | 'Técnico' | 'Gerente';
 
-interface User {
+export interface User {
+  id: number;
   name: string;
-  role: Role;
+  lastname: string;
+  role: UserRole;
+  area?: number;
 }
 
 interface AuthState {
   user: User | null;
-  setRole: (role: Role) => void;
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (credentials: { name: string; password?: string; roleToMock?: UserRole }) => void;
   logout: () => void;
+  setRole: (role: UserRole) => void; // Kept for dev mode role switching
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  // Default to Operador for initial testing
-  user: { name: 'Alex Sterling', role: 'Operador' },
-  setRole: (role: Role) => set((state) => ({ user: state.user ? { ...state.user, role } : { name: 'Alex Sterling', role } })),
-  logout: () => set({ user: null }),
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+
+      login: (credentials) => {
+        // Mocking the validation and response from POST /login
+        const mockUser: User = {
+          id: 1,
+          name: credentials.name,
+          lastname: 'Mock',
+          role: credentials.roleToMock || 'Operador',
+          area: 1,
+        };
+        
+        set({
+          user: mockUser,
+          token: 'mock-jwt-token-abc123',
+          isAuthenticated: true,
+        });
+      },
+
+      logout: () => {
+        set({ user: null, token: null, isAuthenticated: false });
+      },
+
+      // Dev tool to quick switch role without relogging
+      setRole: (role) => 
+        set((state) => ({ 
+          user: state.user ? { ...state.user, role } : null 
+        })),
+    }),
+    {
+      name: 'opscore-auth', // localStorage key
+    }
+  )
+);
+
