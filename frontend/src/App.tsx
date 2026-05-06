@@ -1,122 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import MainLayout from './components/layout/MainLayout';
+import { useAuthStore, type Role } from './store/authStore';
+
+function DummyPage({ title }: { title: string }) {
+  return (
+    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">{title}</h1>
+      <p className="text-gray-600">Este es un componente de prueba para la ruta: {title}.</p>
+    </div>
+  );
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { user, setRole } = useAuthStore();
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+          <div className="w-16 h-16 bg-[#0FA968] rounded-2xl mx-auto mb-6" />
+          <h1 className="text-2xl font-bold text-[#0B1528] mb-8">OpsCore Login</h1>
+          <div className="flex flex-col gap-3">
+            <button onClick={() => setRole('Operador')} className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Entrar como Operador</button>
+            <button onClick={() => setRole('Supervisor')} className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Entrar como Supervisor</button>
+            <button onClick={() => setRole('Técnico')} className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Entrar como Técnico</button>
+            <button onClick={() => setRole('Gerente')} className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">Entrar como Gerente</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Router>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Navigate to={user.role === 'Gerente' ? '/dashboard' : '/mis-reportes'} replace />} />
+          <Route path="/reportar" element={<DummyPage title="Reportar incidente" />} />
+          <Route path="/mis-reportes" element={<DummyPage title="Mis reportes" />} />
+          <Route path="/mis-tareas" element={<DummyPage title="Mis tareas" />} />
+          <Route path="/dashboard" element={<DummyPage title="Dashboard General" />} />
+          <Route path="/usuarios" element={<DummyPage title="Gestión de usuarios" />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        {/* Role Switcher for Dev Only */}
+        <div className="mt-12 p-6 bg-blue-50 rounded-xl border border-blue-100">
+          <h2 className="text-sm font-bold text-blue-800 mb-4 uppercase tracking-wider">Modo Desarrollo: Cambiar Rol</h2>
+          <div className="flex flex-wrap gap-2">
+            {(['Operador', 'Supervisor', 'Técnico', 'Gerente'] as Role[]).map(r => (
+              <button
+                key={r}
+                onClick={() => setRole(r)}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${user.role === r ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50'}`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </MainLayout>
+    </Router>
+  );
 }
 
 export default App
