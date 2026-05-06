@@ -1,8 +1,8 @@
 # OpsCore Project Memory
 
 ## 🟢 Project Status
-- **Phase**: Initial Setup
-- **Current Branch**: `feat/base-layout`
+- **Phase**: Authentication UI & Hooks
+- **Current Branch**: `feat/hook-auth`
 - **Frontend**: Initialized (Vite + React + TS)
 - **Backend**: Express.js (Modular Domain Architecture)
 
