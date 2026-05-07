@@ -17,7 +17,7 @@ export const ROLE_NAVIGATION: Record<UserRole, NavItem[]> = {
     { label: 'Mis tareas', path: '/mis-tareas', icon: Wrench },
   ],
   Gerente: [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Métricas de reportes', path: '/metricas-de-reportes', icon: LayoutDashboard },
     { label: 'Gestión de usuarios', path: '/usuarios', icon: Users },
   ],
 };

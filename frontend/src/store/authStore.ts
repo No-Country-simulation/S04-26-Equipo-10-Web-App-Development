@@ -15,7 +15,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (credentials: { name: string; password?: string; roleToMock?: UserRole }) => void;
+  setSession: (user: User, token: string) => void;
   logout: () => void;
   setRole: (role: UserRole) => void; // Kept for dev mode role switching
 }
@@ -27,19 +27,10 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
 
-      login: (credentials) => {
-        // Mocking the validation and response from POST /login
-        const mockUser: User = {
-          id: 1,
-          name: credentials.name,
-          lastname: 'Mock',
-          role: credentials.roleToMock || 'Operador',
-          area: 1,
-        };
-        
+      setSession: (user, token) => {
         set({
-          user: mockUser,
-          token: 'mock-jwt-token-abc123',
+          user,
+          token,
           isAuthenticated: true,
         });
       },
