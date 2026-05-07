@@ -27,6 +27,11 @@
 - **Frontend**: React-based (Tailwind CSS, Zustand, React Router). Using a centralized `authStore` for state and `RoleGuard` for RBAC.
 
 ## 📝 Session Compact
-- **Branch Switch**: Switched to `feat/login` after merging `feat/hook-auth` into `develop`.
-- **Commit**: `feat(auth): implement RBAC infrastructure and Zustand persist` (Created ProtectedRoute, RoleGuard, and refactored authStore).
-- **Previous Commit**: `feat: implement responsive MainLayout with RBAC (dev mode)` (Tailwind config, responsive DesktopNav, MobileNav, Zustand auth store).
+- **Commit**: `feat(auth): implement premium login page with Shadcn UI, Zod validation, and RBAC redirect`
+  - Shadcn UI initialized (button, input, label, sonner). Path aliases configured.
+  - `LoginPage.tsx` with Zod/RHF form, loading state, 4-user test panel.
+  - `authService.ts` with strict whitelist (only 4 test emails allowed).
+  - `authStore` refactored: `login()` → `setSession(user, token)`.
+  - `App.tsx`: LoginPage integrated, Dev Switch removed, RBAC redirects finalized.
+  - Gerente → `/metricas-de-reportes`, Supervisor → `/reportes`.
+- **Previous Commit**: `feat(auth): implement RBAC infrastructure and Zustand persist` (ProtectedRoute, RoleGuard, authStore).
