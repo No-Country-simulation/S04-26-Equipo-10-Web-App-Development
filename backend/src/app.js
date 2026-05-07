@@ -2,7 +2,7 @@
 import express from "express"
 
 // Importamos el router principal (todas las rutas)
-import routes from "./routes/index.js"
+import routes from "./index.js"
 
 const app = express()
 
@@ -20,4 +20,5 @@ app.use((err, req, res, next) => {
 		message: err.message || "Unexpected error",
 	})
 })
+
 export default app
