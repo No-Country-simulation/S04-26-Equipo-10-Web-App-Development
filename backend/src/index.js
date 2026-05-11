@@ -2,13 +2,13 @@ import 'dotenv/config';
 import express from "express"
 
 // rutas
-import incidentRoutes from "./modules/incident/incident.routes.js"
+import incidentsRoutes from "./modules/incidents/incidents.routes.js"
 
 const app = express();
 
 app.use(express.json());
 
-app.use("/incidents", incidentRoutes);
+app.use("/incidents", incidentsRoutes);
 
 app.get("/health", (req, res) => {
 	res.status(200).json({
