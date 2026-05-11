@@ -7,9 +7,9 @@ import { fileURLToPath } from "url"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const DB_FILE = path.join(__dirname, "../database.sqlite")
+const DB_FILE = path.join(__dirname, "../../database.sqlite")
 // const DB_FILE = "./database.sqlite"
-const MIGRATIONS_DIR = "./migrations"
+const MIGRATIONS_DIR = path.join(__dirname, "../migrations")
 const SEED_FILE = path.join(__dirname, "../seeds/seed_base.sql")
 
 // Crear conexión

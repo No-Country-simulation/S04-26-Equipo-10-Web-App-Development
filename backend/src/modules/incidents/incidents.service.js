@@ -3,7 +3,7 @@ export default class IncidentsService {
 		this.IncidentsRepository = IncidentsRepository
 	}
 	getFilters(user, query) {
-		const { status_id, area_id, assigned_to, created_by, page, limit } = query
+		let { status_id, area_id, assigned_to, created_by, page, limit } = query
 		let conditions = []
 		let values = []
 
@@ -31,6 +31,7 @@ export default class IncidentsService {
 				area_id = Number(user.area_id)
 				conditions.push("area_id = ?")
 				values.push(Number(area_id))
+				break
 			case 4:
 				break
 
@@ -60,7 +61,7 @@ export default class IncidentsService {
 		return { conditions, values }
 	}
 	async getIncidents(user, query) {
-		const { conditions, values } = this.getFilters(query)
+		const { conditions, values } = this.getFilters(user, query)
 
 		let whereClause = ""
 		if (conditions.length > 0) {
@@ -72,4 +73,35 @@ export default class IncidentsService {
 		)
 		return incidents
 	}
+	async createIncident({
+		type_id,
+		area_id,
+		description,
+		created_by,
+	}) {
+		if (!type_id || !area_id || !description) {
+			throw new Error("Missing required fields")
+		}
+
+		const typeExists = await this.IncidentsRepository.findTypeById(type_id);
+		if (!typeExists) {
+			throw new Error("Invalid type_id");
+		}
+
+		const areaExists = await this.IncidentsRepository.findAreaById(area_id);
+		if (!areaExists) {
+			throw new Error("Invalid area_id");
+		}		
+
+		const incident = await this.IncidentsRepository.createIncident({
+			type_id: Number(type_id),
+			area_id: Number(area_id),
+			description,
+			status_id: 1,
+			created_by,
+		})
+
+		return incident
+	}
+
 }
