@@ -62,4 +62,29 @@ export default class IncidentsRepository {
 			)
 		})
 	}
+	async findTypeById(id) {
+		return new Promise((resolve, reject) => {
+			this.db.get(
+				"SELECT id FROM types WHERE id = ?",
+				[id],
+				(err, row) => {
+					if (err) return reject(err);
+					resolve(row);
+				}
+			);
+		});
+	}
+
+	async findAreaById(id) {
+		return new Promise((resolve, reject) => {
+			this.db.get(
+				"SELECT id FROM areas WHERE id = ?",
+				[id],
+				(err, row) => {
+					if (err) return reject(err);
+					resolve(row);
+				}
+			);
+		});
+	}
 }
