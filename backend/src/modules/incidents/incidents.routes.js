@@ -11,5 +11,11 @@ const incidentsService = new IncidentsService(incidentsRepository)
 const incidentsController = new IncidentsController(incidentsService)
 
 router.get("/incidents", requireAuth, incidentsController.getIncidents)
+router.patch(
+	"incidents/:id/assign",
+	requireAuth,
+	requireRole(3, 4),
+	incidentsController.assignIncident,
+)
 
 export default router
