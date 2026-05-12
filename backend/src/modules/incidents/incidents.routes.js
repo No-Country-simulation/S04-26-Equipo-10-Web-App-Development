@@ -4,6 +4,7 @@ import IncidentsController from "./incidents.controller.js"
 import IncidentsService from "./incidents.service.js"
 import IncidentsRepository from "./incidents.repository.js"
 import { requireAuth } from "../../middlewares/auth.middleware.js"
+import { asyncHandler } from "../../middlewares/asyncHandler.middleware.js"
 
 const router = express.Router()
 const incidentsRepository = new IncidentsRepository(db)
@@ -15,14 +16,17 @@ router.patch(
 	"incidents/:id/assign",
 	requireAuth,
 	requireRole(3, 4),
-	incidentsController.assignIncident,
-router.get("/", requireAuth, (req, res) =>
-  incidentsController.getIncidents(req, res)
+	asyncHandler(incidentsController.assignIncident.bind(incidentsController)),
+)
+router.get(
+	"/",
+	requireAuth,
+	asyncHandler(incidentsController.getIncidents.bind(incidentsController)),
 )
 
 router.post(
 	"/",
 	requireAuth,
-	(req, res) => incidentsController.createIncident(req, res),
+	asyncHandler(incidentsController.createIncident.bind(incidentsController)),
 )
 export default router
