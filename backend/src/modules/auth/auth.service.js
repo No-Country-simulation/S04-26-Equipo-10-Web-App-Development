@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import { NotFoundError, UnauthorizedError } from "../../errors/errors"
 
 export class AuthService {
 	constructor(AuthRepository) {
@@ -9,13 +10,13 @@ export class AuthService {
 	async validateUser(name, lastname, password) {
 		const user = await this.AuthRepository.findUser(name, lastname)
 		if (!user) {
-			throw new Error("Usuario no encontrado")
+			throw new NotFoundError("User not found")
 		}
 
 		const isValid = await bcrypt.compare(password, user.password)
 
 		if (!isValid) {
-			throw new Error("Credenciales inválidas")
+			throw new UnauthorizedError("Invalid credentials")
 		}
 
 		return user
