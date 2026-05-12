@@ -11,9 +11,8 @@ const incidentsRepository = new IncidentsRepository(db)
 const incidentsService = new IncidentsService(incidentsRepository)
 const incidentsController = new IncidentsController(incidentsService)
 
-router.get("/incidents", requireAuth, incidentsController.getIncidents)
 router.patch(
-	"incidents/:id/assign",
+	"/:id/assign",
 	requireAuth,
 	requireRole(3, 4),
 	asyncHandler(incidentsController.assignIncident.bind(incidentsController)),
