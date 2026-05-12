@@ -73,6 +73,16 @@ export default class IncidentsService {
 		)
 		return incidents
 	}
+	async assignTechnician(techId, incidentId) {
+		const incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+		const tech = await this.IncidentsRepository.getUserById(techId)
+		if (tech.role_id == 2 && tech.area_id == incident.area_id) {
+			await this.IncidentsRepository.assignTech(techId, incidentId)
+			incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+			return incident
+		}
+		return null
+	}
 	async createIncident({
 		type_id,
 		area_id,

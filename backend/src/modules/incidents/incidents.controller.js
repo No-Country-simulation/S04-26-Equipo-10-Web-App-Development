@@ -8,6 +8,14 @@ export default class IncidentsController {
 		const incidents = await this.IncidentsService.getIncidents(user, query)
 		res.json({ incidents })
 	}
+	async assignIncident(req, res) {
+		const { technician_id } = req.body
+		const { id } = req.params
+		incident = await this.IncidentsService.assignTechnician(
+			Number(technician_id),
+			Number(id),
+		)
+		res.json({ msg: "Assignded succesfully", incident })
 	async createIncident(req, res) {
 		try {
 			const { type_id, area_id, description } = req.body || {}
