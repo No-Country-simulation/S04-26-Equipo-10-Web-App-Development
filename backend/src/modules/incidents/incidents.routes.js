@@ -1,9 +1,9 @@
 import express from "express"
 import db from "../../config/db.js"
-import IncidentsController from "./auth.controller.js"
-import IncidentsService from "./auth.service.js"
-import IncidentsRepository from "./auth.repository.js"
-import requireAuth from "../../middlewares/auth.middleware.js"
+import IncidentsController from "./incidents.controller.js"
+import IncidentsService from "./incidents.service.js"
+import IncidentsRepository from "./incidents.repository.js"
+import { requireAuth } from "../../middlewares/auth.middleware.js"
 
 const router = express.Router()
 const incidentsRepository = new IncidentsRepository(db)
@@ -16,6 +16,13 @@ router.patch(
 	requireAuth,
 	requireRole(3, 4),
 	incidentsController.assignIncident,
+router.get("/", requireAuth, (req, res) =>
+  incidentsController.getIncidents(req, res)
 )
 
+router.post(
+	"/",
+	requireAuth,
+	(req, res) => incidentsController.createIncident(req, res),
+)
 export default router

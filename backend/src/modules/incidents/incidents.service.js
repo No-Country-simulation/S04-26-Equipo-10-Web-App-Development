@@ -83,4 +83,35 @@ export default class IncidentsService {
 		}
 		return null
 	}
+	async createIncident({
+		type_id,
+		area_id,
+		description,
+		created_by,
+	}) {
+		if (!type_id || !area_id || !description) {
+			throw new Error("Missing required fields")
+		}
+
+		const typeExists = await this.IncidentsRepository.findTypeById(type_id);
+		if (!typeExists) {
+			throw new Error("Invalid type_id");
+		}
+
+		const areaExists = await this.IncidentsRepository.findAreaById(area_id);
+		if (!areaExists) {
+			throw new Error("Invalid area_id");
+		}		
+
+		const incident = await this.IncidentsRepository.createIncident({
+			type_id: Number(type_id),
+			area_id: Number(area_id),
+			description,
+			status_id: 1,
+			created_by,
+		})
+
+		return incident
+	}
+
 }
