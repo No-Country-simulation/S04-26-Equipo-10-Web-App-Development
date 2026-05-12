@@ -3,19 +3,54 @@ export default class IncidentsController {
 		this.IncidentsService = IncidentsService
 	}
 	async getIncidents(req, res) {
-		const query = req.query
-		const user = req.user
-		const incidents = await this.IncidentsService.getIncidents(user, query)
-		res.json({ incidents })
+		try {
+			const query = req.query
+			const user = req.user
+			const incidents = await this.IncidentsService.getIncidents(user, query)
+			res.json({ incidents })
+		} catch (error) {
+			if (error.message === "Missing required fields") {
+				return res.status(400).json({
+					error: error.message,
+				})
+			}
+			if (error.message.includes("SQLITE_CONSTRAINT")) {
+				return res.status(400).json({
+					error: "Invalid foreign key value",
+				})
+			}
+
+			return res.status(500).json({
+				error: "Internal server error",
+			})
+		}
 	}
 	async assignIncident(req, res) {
-		const { technician_id } = req.body
-		const { id } = req.params
-		incident = await this.IncidentsService.assignTechnician(
-			Number(technician_id),
-			Number(id),
-		)
-		res.json({ msg: "Assignded succesfully", incident })
+		try {
+			const { technician_id } = req.body
+			const { id } = req.params
+			incident = await this.IncidentsService.assignTechnician(
+				Number(technician_id),
+				Number(id),
+			)
+			res.json({ msg: "Assignded succesfully", incident })
+		} catch (error) {
+			if (error.message === "Missing required fields") {
+				return res.status(400).json({
+					error: error.message,
+				})
+			}
+			if (error.message.includes("SQLITE_CONSTRAINT")) {
+				return res.status(400).json({
+					error: "Invalid foreign key value",
+				})
+			}
+
+			return res.status(500).json({
+				error: "Internal server error",
+			})
+		}
+	}
 	async createIncident(req, res) {
 		try {
 			const { type_id, area_id, description } = req.body || {}
@@ -30,7 +65,6 @@ export default class IncidentsController {
 			})
 
 			return res.status(201).json(incident)
-
 		} catch (error) {
 			if (error.message === "Missing required fields") {
 				return res.status(400).json({
