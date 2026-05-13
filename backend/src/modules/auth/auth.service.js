@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import { NotFoundError, UnauthorizedError } from "../../errors/errors.js"
+import { NotFoundError, UnauthorizedError } from "../../errors/errors"
 
 export class AuthService {
 	constructor(AuthRepository) {
@@ -23,7 +23,7 @@ export class AuthService {
 	}
 	createToken(user) {
 		const token = jwt.sign(
-			{ user_id: user.id, role_id: user.role_id, area_id: user.area_id },
+			{ user_id: user.id, role_id: user.role, area_id: user.area },
 			process.env.JWT_SECRET,
 			{ expiresIn: "8h" },
 		)
