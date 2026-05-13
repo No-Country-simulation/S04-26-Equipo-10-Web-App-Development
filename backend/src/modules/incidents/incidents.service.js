@@ -1,4 +1,4 @@
-import { BadRequestError } from "../../errors/errors.js"
+import { BadRequestError } from "../../errors/errors"
 
 export default class IncidentsService {
 	constructor(IncidentsRepository) {
@@ -17,7 +17,7 @@ export default class IncidentsService {
 
 		const offset = (safePage - 1) * safeLimit
 
-		switch (Number(user.role_id)) {
+		switch (Number(user.role)) {
 			case 1:
 				created_by = 1
 				conditions.push("created_by = ?")
@@ -69,7 +69,7 @@ export default class IncidentsService {
 		if (conditions.length > 0) {
 			whereClause = "WHERE " + conditions.join(" AND ")
 		}
-		const incidents = await this.IncidentsRepository.findIncidents(
+		const incidents = await this.IncidentsRepository.getIncidents(
 			whereClause,
 			values,
 		)
@@ -80,7 +80,8 @@ export default class IncidentsService {
 		const tech = await this.IncidentsRepository.getUserById(techId)
 		if (tech.role_id == 2 && tech.area_id == incident.area_id) {
 			await this.IncidentsRepository.assignTech(techId, incidentId)
-			return this.IncidentsRepository.getIncidentsById(incidentId)
+			incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+			return incident
 		}
 		throw new BadRequestError("Technician and incident don´t match")
 	}

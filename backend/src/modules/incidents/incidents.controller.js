@@ -11,7 +11,7 @@ export default class IncidentsController {
 	async assignIncident(req, res) {
 		const { technician_id } = req.body
 		const { id } = req.params
-		const incident = await this.IncidentsService.assignTechnician(
+		incident = await this.IncidentsService.assignTechnician(
 			Number(technician_id),
 			Number(id),
 		)
