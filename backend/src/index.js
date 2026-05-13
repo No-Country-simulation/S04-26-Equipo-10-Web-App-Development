@@ -5,7 +5,6 @@ import incidentsRoutes from "./modules/incidents/incidents.routes.js"
 import authRoutes from "./modules/auth/auth.routes.js"
 import areasRoutes from "./modules/areas/areas.routes.js"
 import incidentTypesRoutes from "./modules/incident-types/incident-types.routes.js"
-import prioritiesRoutes from "./modules/priorities/priorities.routes.js"
 import statusesRoutes from "./modules/statuses/statuses.routes.js"
 import rolesRoutes from "./modules/roles/roles.routes.js"
 
@@ -15,7 +14,6 @@ router.use("/incidents", incidentsRoutes)
 router.use("/auth", authRoutes)
 router.use("/catalogs/areas", areasRoutes)
 router.use("/catalogs/incident-types", incidentTypesRoutes)
-router.use("/catalogs/priorities", prioritiesRoutes)
 router.use("/catalogs/statuses", statusesRoutes)
 router.use("/catalogs/roles", rolesRoutes)
 
