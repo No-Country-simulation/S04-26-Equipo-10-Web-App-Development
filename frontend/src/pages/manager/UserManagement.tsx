@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/layout/manager/Header"; // o simple si preferís sin navLinks
+import KpiGrid from "../../components/charts/KpiGrid";
 
 // --- tipos ---
 type Rol = "Operador" | "Operadora" | "Técnico" | "Técnica" | "Supervisor" | "Gerente";
@@ -24,7 +26,7 @@ const mockUsuarios: Usuario[] = [
   { id: 6, nombre: "Miguel", apellido: "Torres",    email: "migueltorres@email.com",   rol: "Técnico",   area: "Mantenimiento",activo: false },
 ];
 
-// --- page ---
+// --- página ---
 export default function UserManagement() {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState<"dashboard" | "users">("users");
@@ -47,44 +49,32 @@ export default function UserManagement() {
     console.log("Editar usuario:", id);
   };
 
+  const navLinks = [
+    {
+      label: "Dashboard",
+      path: "/manager",
+      active: activeNav === "dashboard",
+    },
+    {
+      label: "Gestión de usuarios",
+      path: "/manager/users",
+      active: activeNav === "users",
+    },
+  ];
+
+  const kpiItems = [
+    { label: "Total de usuarios",    value: totalUsuarios,    icon: "👤", iconBg: "#e0f2fe" },
+    { label: "Usuarios activos",     value: usuariosActivos,  icon: "✅", iconBg: "#7BC6B1" },
+    { label: "Usuarios inactivos",   value: usuariosInactivos,icon: "⭕", iconBg: "#fee2e2" },
+  ];
+
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", fontFamily: "Inter, sans-serif" }}>
-      {/* Navbar */}
-      <nav style={{ background: "#111827", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", height: 64 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>O</span>
-            </div>
-            <span style={{ color: "#fff", fontSize: 20, fontWeight: 700 }}>OpsCore</span>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {([["dashboard", "Dashboard"], ["users", "Gestión de usuarios"]] as const).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => handleNav(key)}
-                style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  color: activeNav === key ? "#fff" : "#9ca3af",
-                  fontSize: 14, fontWeight: activeNav === key ? 600 : 400,
-                  padding: "4px 8px",
-                  borderBottom: activeNav === key ? "2px solid #10b981" : "2px solid transparent",
-                  transition: "all 0.2s",
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Alex Sterling</div>
-            <div style={{ color: "#9ca3af", fontSize: 12 }}>Gerente</div>
-          </div>
-          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 20 }}>⎋</button>
-        </div>
-      </nav>
+      <Header
+        userName="Alex Sterling"
+        userRole="Gerente"
+        navLinks={navLinks}
+      />
 
       <div style={{ padding: "32px" }}>
         {/* Top row */}
@@ -98,23 +88,7 @@ export default function UserManagement() {
         </div>
 
         {/* KPI cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 24 }}>
-          {[
-            { label: "Total de usuarios",    value: totalUsuarios,    icon: "👤", iconBg: "#e0f2fe" },
-            { label: "Usuarios activos",     value: usuariosActivos,  icon: "✅", iconBg: "#7BC6B1" },
-            { label: "Usuarios inactivos",   value: usuariosInactivos,icon: "⭕", iconBg: "#fee2e2" },
-          ].map((k, i) => (
-            <div key={i} style={{ background: "#fff", borderRadius: 10, padding: "16px 20px", boxShadow: "0 1px 4px rgba(0,0,0,0.07)", display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: k.iconBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
-                {k.icon}
-              </div>
-              <div>
-                <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 4 }}>{k.label}</div>
-                <div style={{ fontSize: 26, fontWeight: 700, color: "#111827" }}>{k.value}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <KpiGrid items={kpiItems} columns={3} />
 
         {/* Tabla */}
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>

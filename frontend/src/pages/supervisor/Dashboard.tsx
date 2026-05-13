@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Header from "../../components/layout/simple/Header";
+import EstadoBadge from "../../components/ui/EstadoBadge";
+import PrioridadBadge from "../../components/ui/PrioridadBadge";
 
 // --- tipos ---
 type Estado = "Abierto" | "En proceso" | "Asignado" | "Cerrado";
@@ -26,38 +28,7 @@ const mockReportes: Reporte[] = [
   { id: 4, operator: "Elena Rodríguez", estado: "En proceso", prioridad: "Baja", tipo: "Vibración Excesiva", descripcion: "Vibración anormal en bomba de enfriamiento. Se detectó durante la inspección matutina.", area: "Producción", fecha: "21/04/2026", hora: "07:47", tecnico: "Miguel Torres" },
 ];
 
-// --- estilos ---
-const estadoStyles: Record<string, { dot: string; label: string }> = {
-  Abierto:      { dot: "#ef4444", label: "Abierto" },
-  Asignado:     { dot: "#f59e0b", label: "Asignado" },
-  "En proceso": { dot: "#3b82f6", label: "En proceso" },
-  Cerrado:      { dot: "#10b981", label: "Cerrado" },
-};
-
-const prioridadStyles: Record<string, { color: string }> = {
-  Alta:                   { color: "#ef4444" },
-  Media:                  { color: "#f59e0b" },
-  Baja:                   { color: "#6b7280" },
-  "Prioridad no asignada":{ color: "#9ca3af" },
-};
-
-// --- badges ---
-function EstadoBadge({ estado }: { estado: string }) {
-  const s = estadoStyles[estado] ?? { dot: "#6b7280", label: estado };
-  return (
-    <span style={{ display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
-      <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.dot, display: "inline-block" }} />
-      <span style={{ fontSize: 12, color: "#374151" }}>{s.label}</span>
-    </span>
-  );
-}
-
-function PrioridadBadge({ prioridad }: { prioridad: string }) {
-  const s = prioridadStyles[prioridad] ?? { color: "#6b7280" };
-  return <span style={{ fontSize: 12, fontWeight: 600, color: s.color }}>{prioridad}</span>;
-}
-
-// --- botón acción ---
+// --- botón acción (local, podrías extraerlo a ui/ActionButton si se repite) ---
 function ActionButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button
@@ -82,17 +53,15 @@ function ActionButton({ label, onClick }: { label: string; onClick: () => void }
   );
 }
 
-// --- page ---
+// --- página ---
 export default function SupervisorPage() {
   const [reportes, setReportes] = useState<Reporte[]>(mockReportes);
 
   const handleEditEstado = (id: number) => {
-    // placeholder: acá iría un modal/dropdown para cambiar estado
     console.log("Editar estado:", id);
   };
 
   const handleEditPrioridad = (id: number) => {
-    // placeholder: acá iría un modal/dropdown para cambiar prioridad
     console.log("Editar prioridad:", id);
   };
 
@@ -114,7 +83,6 @@ export default function SupervisorPage() {
 
         {/* Tabla */}
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
-          {/* Tab header (una sola tab, sin toggle) */}
           <div style={{ background: "#10b981", padding: "14px 20px" }}>
             <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Reportes</span>
           </div>

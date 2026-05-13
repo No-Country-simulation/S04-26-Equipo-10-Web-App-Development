@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Header from "../../components/layout/simple/Header";
+import EstadoBadge from "../../components/ui/EstadoBadge";
+import PrioridadBadge from "../../components/ui/PrioridadBadge";
 
 // --- tipos ---
 type Estado = "Abierto" | "Asignado" | "En proceso" | "Cerrado";
@@ -24,36 +26,7 @@ const mockReportes: Reporte[] = [
   { id: 2, operator: "Elena Rodríguez", estado: "En proceso", prioridad: "Baja", tipo: "Vibración Excesiva", descripcion: "Vibración anormal en bomba de enfriamiento. Se detectó durante la inspección matutina.", area: "Producción", fecha: "21/04/2026", hora: "07:47", tecnico: "Miguel Torres" },
 ];
 
-// --- estilos ---
-const estadoStyles: Record<string, { dot: string; label: string }> = {
-  Abierto:      { dot: "#ef4444", label: "Abierto" },
-  Asignado:     { dot: "#f59e0b", label: "Asignado" },
-  "En proceso": { dot: "#3b82f6", label: "En proceso" },
-  Cerrado:      { dot: "#10b981", label: "Cerrado" },
-};
-
-const prioridadStyles: Record<string, { color: string }> = {
-  Alta:  { color: "#ef4444" },
-  Media: { color: "#f59e0b" },
-  Baja:  { color: "#6b7280" },
-};
-
-function EstadoBadge({ estado }: { estado: string }) {
-  const s = estadoStyles[estado] ?? { dot: "#6b7280", label: estado };
-  return (
-    <span style={{ display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
-      <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.dot, display: "inline-block" }} />
-      <span style={{ fontSize: 12, color: "#374151" }}>{s.label}</span>
-    </span>
-  );
-}
-
-function PrioridadBadge({ prioridad }: { prioridad: string }) {
-  const s = prioridadStyles[prioridad] ?? { color: "#6b7280" };
-  return <span style={{ fontSize: 12, fontWeight: 600, color: s.color }}>{prioridad}</span>;
-}
-
-// --- page ---
+// --- página ---
 export default function TechniquePage() {
   const [reportes] = useState<Reporte[]>(mockReportes);
 
@@ -63,7 +36,7 @@ export default function TechniquePage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", fontFamily: "Inter, sans-serif" }}>
-      <Header name="Miguel Torres" role="Supervisor" onLogout={() => console.log("logout")} />
+      <Header name="Miguel Torres" role="Técnico" onLogout={() => console.log("logout")} />
 
       <div style={{ padding: "32px 32px 0" }}>
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>

@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/layout/manager/Header";
+import BarChart from "../../components/charts/BarChart";
+import KpiGrid from "../../components/charts/KpiGrid";
+import EstadoBadge from "../../components/ui/EstadoBadge";
+import PrioridadBadge from "../../components/ui/PrioridadBadge";
 
 // --- tipos ---
 type Estado = "Abierto" | "Asignado" | "En proceso" | "Cerrado";
@@ -40,37 +45,7 @@ const barData = [
   { label: "Total de incidentes cerrados", value: 0, max: 4 },
 ];
 
-// --- estilos ---
-const estadoStyles: Record<string, { dot: string; label: string }> = {
-  Abierto:      { dot: "#ef4444", label: "Abierto" },
-  Asignado:     { dot: "#f59e0b", label: "Asignado" },
-  "En proceso": { dot: "#3b82f6", label: "En proceso" },
-  Cerrado:      { dot: "#10b981", label: "Cerrado" },
-};
-
-const prioridadStyles: Record<string, { color: string }> = {
-  Alta:                    { color: "#ef4444" },
-  Media:                   { color: "#f59e0b" },
-  Baja:                    { color: "#6b7280" },
-  "Prioridad no asignada": { color: "#9ca3af" },
-};
-
-function EstadoBadge({ estado }: { estado: string }) {
-  const s = estadoStyles[estado] ?? { dot: "#6b7280", label: estado };
-  return (
-    <span style={{ display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
-      <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.dot, display: "inline-block" }} />
-      <span style={{ fontSize: 12, color: "#374151" }}>{s.label}</span>
-    </span>
-  );
-}
-
-function PrioridadBadge({ prioridad }: { prioridad: string }) {
-  const s = prioridadStyles[prioridad] ?? { color: "#6b7280" };
-  return <span style={{ fontSize: 12, fontWeight: 600, color: s.color }}>{prioridad}</span>;
-}
-
-// --- page ---
+// --- página ---
 export default function ManagerPage() {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState<"dashboard" | "users">("dashboard");
@@ -78,56 +53,30 @@ export default function ManagerPage() {
   const handleNav = (tab: "dashboard" | "users") => {
     setActiveNav(tab);
     if (tab === "users") navigate("/manager/users");
+    else navigate("/manager");
   };
+
+  const navLinks = [
+    {
+      label: "Dashboard",
+      path: "/manager",
+      active: activeNav === "dashboard",
+    },
+    {
+      label: "Gestión de usuarios",
+      path: "/manager/users",
+      active: activeNav === "users",
+    },
+  ];
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", fontFamily: "Inter, sans-serif" }}>
-      {/* Header con nav embebida */}
-      <nav style={{
-        background: "#111827",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 24px",
-        height: 64,
-      }}>
-        {/* Logo + nav links */}
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>O</span>
-            </div>
-            <span style={{ color: "#fff", fontSize: 20, fontWeight: 700 }}>OpsCore</span>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {([["dashboard", "Dashboard"], ["users", "Gestión de usuarios"]] as const).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => handleNav(key)}
-                style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  color: activeNav === key ? "#fff" : "#9ca3af",
-                  fontSize: 14, fontWeight: activeNav === key ? 600 : 400,
-                  padding: "4px 8px",
-                  borderBottom: activeNav === key ? "2px solid #10b981" : "2px solid transparent",
-                  transition: "all 0.2s",
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* User */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Alex Sterling</div>
-            <div style={{ color: "#9ca3af", fontSize: 12 }}>Gerente</div>
-          </div>
-          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 20 }}>⎋</button>
-        </div>
-      </nav>
+      {/* Header */}
+      <Header
+        userName="Alex Sterling"
+        userRole="Gerente"
+        navLinks={navLinks}
+      />
 
       <div style={{ padding: "32px" }}>
         {/* Top row */}
@@ -144,39 +93,13 @@ export default function ManagerPage() {
         </div>
 
         {/* KPI cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 24 }}>
-          {kpis.map((k, i) => (
-            <div key={i} style={{ background: "#fff", borderRadius: 10, padding: "16px 20px", boxShadow: "0 1px 4px rgba(0,0,0,0.07)", display: "flex", alignItems: "center", gap: 14 }}>
-              <span style={{ fontSize: 28 }}>{k.icon}</span>
-              <div>
-                <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 4 }}>{k.label}</div>
-                <div style={{ fontSize: 26, fontWeight: 700, color: "#111827" }}>{k.value}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <KpiGrid items={kpis} />
 
         {/* Bar chart */}
-        <div style={{ background: "#fff", borderRadius: 10, padding: "20px 24px", marginBottom: 24, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 16 }}>Gráfico de reportes</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {barData.map((b, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 12, color: "#6b7280", width: 220, flexShrink: 0 }}>{b.label}</span>
-                <div style={{ flex: 1, background: "#f3f6f4", borderRadius: 4, height: 12, overflow: "hidden" }}>
-                  <div style={{
-                    height: "100%",
-                    width: `${(b.value / b.max) * 100}%`,
-                    background: "#7BC6B1",
-                    borderRadius: 4,
-                    transition: "width 0.4s ease",
-                  }} />
-                </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827", width: 16, textAlign: "right" }}>{b.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+          <BarChart
+          title="Gráfico de reportes"
+          data={barData}
+          />
 
         {/* Tabla */}
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
