@@ -1,9 +1,11 @@
+import { BadRequestError } from "../../errors/errors"
+
 export default class IncidentsService {
 	constructor(IncidentsRepository) {
 		this.IncidentsRepository = IncidentsRepository
 	}
 	getFilters(user, query) {
-		const { status_id, area_id, assigned_to, created_by, page, limit } = query
+		let { status_id, area_id, assigned_to, created_by, page, limit } = query
 		let conditions = []
 		let values = []
 
@@ -31,6 +33,7 @@ export default class IncidentsService {
 				area_id = Number(user.area_id)
 				conditions.push("area_id = ?")
 				values.push(Number(area_id))
+				break
 			case 4:
 				break
 
@@ -71,5 +74,40 @@ export default class IncidentsService {
 			values,
 		)
 		return incidents
+	}
+	async assignTechnician(techId, incidentId) {
+		const incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+		const tech = await this.IncidentsRepository.getUserById(techId)
+		if (tech.role_id == 2 && tech.area_id == incident.area_id) {
+			await this.IncidentsRepository.assignTech(techId, incidentId)
+			incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+			return incident
+		}
+		throw new BadRequestError("Technician and incident don´t match")
+	}
+	async createIncident({ type_id, area_id, description, created_by }) {
+		if (!type_id || !area_id || !description) {
+			throw new BadRequestError("Missing required fields")
+		}
+
+		const typeExists = await this.IncidentsRepository.findTypeById(type_id)
+		if (!typeExists) {
+			throw new BadRequestError("Invalid type_id")
+		}
+
+		const areaExists = await this.IncidentsRepository.findAreaById(area_id)
+		if (!areaExists) {
+			throw new BadRequestError("Invalid area_id")
+		}
+
+		const incident = await this.IncidentsRepository.createIncident({
+			type_id: Number(type_id),
+			area_id: Number(area_id),
+			description,
+			status_id: 1,
+			created_by,
+		})
+
+		return incident
 	}
 }
