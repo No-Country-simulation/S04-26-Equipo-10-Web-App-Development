@@ -3,7 +3,7 @@ export default class IncidentsRepository {
 		this.db = db
 	}
 
-	async getIncidents(whereClause, values) {https://github.com/No-Country-simulation/S04-26-Equipo-10-Web-App-Development/pull/30/conflict?name=backend%252Fsrc%252Fmodules%252Fincidents%252Fincidents.repository.js&ancestor_oid=4f212cde602f7d8dd68bfb16312ae480f91cc18f&base_oid=e70647c9841f7138639f20ea8769dc442c04fef4&head_oid=f43ed298b0d9b463149ad337c360b07d94524e91
+	async getIncidents(whereClause, values) {
 		const query = `
 			SELECT * FROM incidents
 			${whereClause}
@@ -54,7 +54,6 @@ export default class IncidentsRepository {
 			})
 		})
 	}
-}
 
 	async createIncident({
 		type_id,
@@ -77,13 +76,7 @@ export default class IncidentsRepository {
 		return new Promise((resolve, reject) => {
 			this.db.run(
 				query,
-				[
-					type_id,
-					area_id,
-					description,
-					status_id,
-					created_by,
-				],
+				[type_id, area_id, description, status_id, created_by],
 				function (err) {
 					if (err) return reject(err)
 
@@ -101,27 +94,31 @@ export default class IncidentsRepository {
 	}
 	async findTypeById(id) {
 		return new Promise((resolve, reject) => {
-			this.db.get(
-				"SELECT id FROM types WHERE id = ?",
-				[id],
-				(err, row) => {
-					if (err) return reject(err);
-					resolve(row);
-				}
-			);
-		});
+			this.db.get("SELECT id FROM types WHERE id = ?", [id], (err, row) => {
+				if (err) return reject(err)
+				resolve(row)
+			})
+		})
 	}
 
 	async findAreaById(id) {
 		return new Promise((resolve, reject) => {
-			this.db.get(
-				"SELECT id FROM areas WHERE id = ?",
-				[id],
-				(err, row) => {
-					if (err) return reject(err);
-					resolve(row);
-				}
-			);
-		});
+			this.db.get("SELECT id FROM areas WHERE id = ?", [id], (err, row) => {
+				if (err) return reject(err)
+				resolve(row)
+			})
+		})
+	}
+	async resolveIncident(id, user) {
+		return new Promise((resolve, reject) => {
+			this.db.run(
+				`UPDATE incidents SET closed_by = ?, closed_at = CURRENT_TIMESTAMP `,
+				Number(user.id),
+				function (err) {
+					if (err) reject(err)
+					resolve({ changes: this.changes })
+				},
+			)
+		})
 	}
 }

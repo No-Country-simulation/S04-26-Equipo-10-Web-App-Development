@@ -1,6 +1,7 @@
 export default class IncidentsController {
-	constructor(IncidentsService) {
+	constructor(IncidentsService, ResolutionsService) {
 		this.IncidentsService = IncidentsService
+		this.ResolutionsService = ResolutionsService
 	}
 	async getIncidents(req, res) {
 		const query = req.query
@@ -30,5 +31,18 @@ export default class IncidentsController {
 		})
 
 		return res.status(201).json(incident)
+	}
+	async resolveIncident(req, res) {
+		const { id } = req.params
+		const { user } = req.user
+		const { solution, root_cause_id } = req.body
+		await this.IncidentsService.resolveIncident(Number(id), req.user)
+		const incident = await this.IncidentsService.findIncidentById(Number(id))
+		const resolution = await this.ResolutionsService.createResolution(
+			Number(id),
+			solution,
+			root_cause_id,
+		)
+		res.status(201).json({ incident, resolution })
 	}
 }
