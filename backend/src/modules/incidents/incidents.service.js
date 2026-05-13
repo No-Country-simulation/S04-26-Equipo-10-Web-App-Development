@@ -1,4 +1,4 @@
-import { BadRequestError } from "../../errors/errors"
+import { BadRequestError } from "../../errors/errors.js"
 
 export default class IncidentsService {
 	constructor(IncidentsRepository) {
@@ -80,8 +80,7 @@ export default class IncidentsService {
 		const tech = await this.IncidentsRepository.getUserById(techId)
 		if (tech.role_id == 2 && tech.area_id == incident.area_id) {
 			await this.IncidentsRepository.assignTech(techId, incidentId)
-			incident = await this.IncidentsRepository.getIncidentsById(incidentId)
-			return incident
+			return this.IncidentsRepository.getIncidentsById(incidentId)
 		}
 		throw new BadRequestError("Technician and incident don´t match")
 	}
