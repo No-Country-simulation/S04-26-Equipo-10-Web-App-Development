@@ -15,7 +15,7 @@ export default class IncidentsService {
 
 		const offset = (safePage - 1) * safeLimit
 
-		switch (Number(user.role)) {
+		switch (Number(user.role_id)) {
 			case 1:
 				created_by = 1
 				conditions.push("created_by = ?")
@@ -60,13 +60,13 @@ export default class IncidentsService {
 		return { conditions, values }
 	}
 	async getIncidents(user, query) {
-		const { conditions, values } = this.getFilters(query)
+		const { conditions, values } = this.getFilters(user, query)
 
 		let whereClause = ""
 		if (conditions.length > 0) {
 			whereClause = "WHERE " + conditions.join(" AND ")
 		}
-		const incidents = await this.IncidentsRepository.getIncidents(
+		const incidents = await this.IncidentsRepository.findIncidents(
 			whereClause,
 			values,
 		)

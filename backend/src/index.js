@@ -1,21 +1,16 @@
 import express from "express"
 
 // rutas de cada modulo (cada modulo es un router)
-import incidentRoutes from "./modules/incident/incident.routes.js"
-import userRoutes from "./modules/user/user.routes.js"
-import resolutionRoutes from "./modules/resolution/resolution.routes.js"
-import metricsRoutes from "./modules/metrics/metrics.routes.js"
+import incidentRoutes from "./modules/incidents/incidents.routes.js"
 import authRoutes from "./modules/auth/auth.routes.js"
+import catalogRoutes from "./modules/catalogs/catalogs.routes.js"
 
 const router = express.Router()
 
 //usar los routers con las rutas de los modulos
 router.use("/incidents", incidentRoutes)
-router.use("/users", userRoutes)
-router.use("/areas", areaRoutes)
-router.use("/resolutions", resolutionRoutes)
-router.use("/metrics", metricsRoutes)
 router.use("/auth", authRoutes)
+router.use("/catalogs", catalogRoutes)
 
 // check de estado de la api
 router.get("/health", (req, res) => {

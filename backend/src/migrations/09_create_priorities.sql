@@ -1,0 +1,6 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS priorities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
