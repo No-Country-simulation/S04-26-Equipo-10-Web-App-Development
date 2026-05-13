@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import { NotFoundError, UnauthorizedError } from "../../errors/errors"
+import { NotFoundError, UnauthorizedError } from "../../errors/errors.js"
 
-export class AuthService {
+export default class AuthService {
 	constructor(AuthRepository) {
 		this.AuthRepository = AuthRepository
 	}
