@@ -1,4 +1,4 @@
-export class AuthRepository {
+export default class AuthRepository {
 	constructor(db) {
 		this.db = db
 	}

@@ -1,4 +1,4 @@
-import { BadRequestError } from "../../errors/errors"
+import { BadRequestError } from "../../errors/errors.js"
 
 export default class IncidentsService {
 	constructor(IncidentsRepository) {
