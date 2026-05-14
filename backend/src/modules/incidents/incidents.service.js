@@ -110,4 +110,7 @@ export default class IncidentsService {
 
 		return incident
 	}
+	async resolveIncident(id, user) {
+		await this.IncidentsRepository.resolveIncident(id, user)
+	}
 }

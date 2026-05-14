@@ -109,4 +109,16 @@ export default class IncidentsRepository {
 			})
 		})
 	}
+	async resolveIncident(id, user) {
+		return new Promise((resolve, reject) => {
+			this.db.run(
+				`UPDATE incidents SET closed_by = ?, closed_at = CURRENT_TIMESTAMP `,
+				Number(user.id),
+				function (err) {
+					if (err) reject(err)
+					resolve({ changes: this.changes })
+				},
+			)
+		})
+	}
 }
