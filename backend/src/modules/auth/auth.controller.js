@@ -1,4 +1,4 @@
-export class AuthController {
+export default class AuthController {
 	constructor(AuthService) {
 		this.AuthService = AuthService
 	}

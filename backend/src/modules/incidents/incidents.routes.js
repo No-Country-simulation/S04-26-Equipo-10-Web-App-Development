@@ -6,8 +6,8 @@ import IncidentsRepository from "./incidents.repository.js"
 import ResolutionsService from "../resolutions/resolutions.service.js"
 import ResolutionsRepository from "../resolutions/resolutions.repository.js"
 import { requireAuth } from "../../middlewares/auth.middleware.js"
+import { requireAuth, requireRole } from "../../middlewares/auth.middleware.js"
 import { asyncHandler } from "../../middlewares/asyncHandler.middleware.js"
-import ResolutionsService from "../resolutions/resolutions.service.js"
 
 const router = express.Router()
 const incidentsRepository = new IncidentsRepository(db)
