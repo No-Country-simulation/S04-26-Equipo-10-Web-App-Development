@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type Role = "operator" | "supervisor" | "technique" | "manager";
+type Role = "operator" | "supervisor" | "technician" | "manager";
 
 interface User {
   name: string;

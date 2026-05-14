@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "../../components/layout/simple/Header";
 import EstadoBadge from "../../components/ui/EstadoBadge";
 import PrioridadBadge from "../../components/ui/PrioridadBadge";
+import Modal from "../../components/operator/Modal";
 
 // --- mock data ---
 const mockAreaReports = [
@@ -16,10 +17,17 @@ const mockMyReports = [
   { id: 6, operator: "Alex Sterling", estado: "En proceso", prioridad: "Baja", tipo: "Vibración Excesiva", descripcion: "Vibración anormal en bomba de enfriamiento. Se detectó durante la inspección matutina.", area: "Producción", fecha: "21/04/2026", hora: "07:47" },
 ];
 
-// --- page ---
+// --- página ---
 export default function OperatorDashboard() {
   const [activeTab, setActiveTab] = useState("area");
+  const [modalOpen, setModalOpen] = useState(false);
   const reports = activeTab === "area" ? mockAreaReports : mockMyReports;
+
+  const handleNewReport = (data: { tipo: string; area: string; descripcion: string }) => {
+    console.log("Nuevo reporte:", data);
+    // Acá podrías agregar el reporte a la lista mock o enviar a backend
+    setModalOpen(false);
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", fontFamily: "Inter, sans-serif" }}>
@@ -27,11 +35,14 @@ export default function OperatorDashboard() {
 
       <div style={{ padding: "32px 32px 0" }}>
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
-          <button style={{
-            background: "#1f2937", color: "#fff", border: "none",
-            borderRadius: 8, padding: "10px 20px", fontSize: 14,
-            fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
-          }}>
+          <button
+            onClick={() => setModalOpen(true)}
+            style={{
+              background: "#1f2937", color: "#fff", border: "none",
+              borderRadius: 8, padding: "10px 20px", fontSize: 14,
+              fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
+            }}
+          >
             <span style={{ fontSize: 18, lineHeight: 1 }}>+</span> Reportar
           </button>
         </div>
@@ -81,6 +92,13 @@ export default function OperatorDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleNewReport}
+      />
     </div>
   );
 }

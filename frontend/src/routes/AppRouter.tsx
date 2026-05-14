@@ -4,11 +4,11 @@ import { useAuth } from "../context/AuthContext";
 import Login from "../pages/public/Login";
 import OperatorPage from "../pages/operator/Dashboard";
 import SupervisorPage from "../pages/supervisor/Dashboard";
-import TechniquePage from "../pages/technique/Dashboard";
+import TechnicianPage from "../pages/technician/Dashboard";
 import ManagerPage from "../pages/manager/Dashboard";
 import UserManagement from "../pages/manager/UserManagement";
 
-type Role = "operator" | "supervisor" | "technique" | "manager";
+type Role = "operator" | "supervisor" | "technician" | "manager";
 
 function PrivateRoute({
   children,
@@ -54,10 +54,10 @@ export default function AppRouter() {
 
         {/* Técnico */}
         <Route
-          path="/technique"
+          path="/technician"
           element={
-            <PrivateRoute allowedRoles={["technique"]}>
-              <TechniquePage />
+            <PrivateRoute allowedRoles={["technician"]}>
+              <TechnicianPage />
             </PrivateRoute>
           }
         />

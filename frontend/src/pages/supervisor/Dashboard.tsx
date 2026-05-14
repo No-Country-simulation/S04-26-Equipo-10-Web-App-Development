@@ -2,6 +2,8 @@ import { useState } from "react";
 import Header from "../../components/layout/simple/Header";
 import EstadoBadge from "../../components/ui/EstadoBadge";
 import PrioridadBadge from "../../components/ui/PrioridadBadge";
+import EditReportModal from "../../components/supervisor/EditReportModal ";
+import AssignTechnicianModal from "../../components/supervisor/AssignTechnicianModal ";
 
 // --- tipos ---
 type Estado = "Abierto" | "En proceso" | "Asignado" | "Cerrado";
@@ -28,41 +30,42 @@ const mockReportes: Reporte[] = [
   { id: 4, operator: "Elena Rodríguez", estado: "En proceso", prioridad: "Baja", tipo: "Vibración Excesiva", descripcion: "Vibración anormal en bomba de enfriamiento. Se detectó durante la inspección matutina.", area: "Producción", fecha: "21/04/2026", hora: "07:47", tecnico: "Miguel Torres" },
 ];
 
-// --- botón acción (local, podrías extraerlo a ui/ActionButton si se repite) ---
-function ActionButton({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: "block",
-        width: "100%",
-        padding: "5px 10px",
-        marginBottom: 4,
-        background: "#10b981",
-        color: "#fff",
-        border: "none",
-        borderRadius: 6,
-        fontSize: 11,
-        fontWeight: 600,
-        cursor: "pointer",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
 // --- página ---
 export default function SupervisorPage() {
   const [reportes, setReportes] = useState<Reporte[]>(mockReportes);
 
-  const handleEditEstado = (id: number) => {
-    console.log("Editar estado:", id);
+  // Estado para modal de edición
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Reporte | null>(null);
+
+  // Estado para modal de asignación
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+
+  // Abrir modal de edición para un reporte
+  const openEditModal = (reporte: Reporte) => {
+    setEditTarget(reporte);
+    setEditModalOpen(true);
   };
 
-  const handleEditPrioridad = (id: number) => {
-    console.log("Editar prioridad:", id);
+  // Submit de edición
+  const handleEditSubmit = (data: { estado: string; prioridad: string }) => {
+    if (!editTarget) return;
+    setReportes(prev =>
+      prev.map(r =>
+        r.id === editTarget.id
+          ? { ...r, estado: data.estado as Estado, prioridad: data.prioridad as Prioridad }
+          : r
+      )
+    );
+    setEditModalOpen(false);
+  };
+
+  // Submit de asignación de técnico
+  const handleAssignSubmit = (data: { area: string; reporteId: string; tecnico: string }) => {
+    console.log("Asignación:", data);
+    // Podrías actualizar el técnico en el reporte correspondiente
+    // Por ahora solo mostramos en consola y cerramos
+    setAssignModalOpen(false);
   };
 
   return (
@@ -70,13 +73,16 @@ export default function SupervisorPage() {
       <Header name="Alex Sterling" role="Supervisor" onLogout={() => console.log("logout")} />
 
       <div style={{ padding: "32px 32px 0" }}>
-        {/* Botón asignar técnico */}
+        {/* Botón asignar técnico (genérico) */}
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
-          <button style={{
-            background: "#1f2937", color: "#fff", border: "none",
-            borderRadius: 8, padding: "10px 20px", fontSize: 14,
-            fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
-          }}>
+          <button
+            onClick={() => setAssignModalOpen(true)}
+            style={{
+              background: "#1f2937", color: "#fff", border: "none",
+              borderRadius: 8, padding: "10px 20px", fontSize: 14,
+              fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
+            }}
+          >
             + Asignar técnico
           </button>
         </div>
@@ -111,8 +117,22 @@ export default function SupervisorPage() {
                     <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{r.hora}</td>
                     <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{r.tecnico ?? "N/A"}</td>
                     <td style={{ padding: "14px 16px", minWidth: 110 }}>
-                      <ActionButton label="Editar estado"    onClick={() => handleEditEstado(r.id)} />
-                      <ActionButton label="Editar prioridad" onClick={() => handleEditPrioridad(r.id)} />
+                      <button
+                        onClick={() => openEditModal(r)}
+                        style={{
+                          padding: "6px 12px",
+                          background: "#10b981",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: 6,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Editar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -121,6 +141,22 @@ export default function SupervisorPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de edición */}
+      <EditReportModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onSubmit={handleEditSubmit}
+        initialEstado={editTarget?.estado ?? ""}
+        initialPrioridad={editTarget?.prioridad ?? ""}
+      />
+
+      {/* Modal de asignación */}
+      <AssignTechnicianModal
+        open={assignModalOpen}
+        onClose={() => setAssignModalOpen(false)}
+        onSubmit={handleAssignSubmit}
+      />
     </div>
   );
 }

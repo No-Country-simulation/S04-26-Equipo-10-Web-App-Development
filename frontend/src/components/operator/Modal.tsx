@@ -267,29 +267,3 @@ export default function Modal({ open, onClose, onSubmit }: ModalProps) {
     </>
   );
 }
-
-// --- Demo para previsualizar ---
-function Demo() {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{ padding: 32, fontFamily: "Inter, sans-serif", background: "#f3f4f6", minHeight: "100vh" }}>
-      <button
-        onClick={() => setOpen(true)}
-        style={{
-          background: "#111827", color: "#fff", border: "none",
-          borderRadius: 8, padding: "10px 20px", fontSize: 14,
-          fontWeight: 600, cursor: "pointer",
-        }}
-      >
-        + Reportar
-      </button>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        onSubmit={(data) => { console.log("Reporte enviado:", data); setOpen(false); }}
-      />
-    </div>
-  );
-}
-
-export { Modal };

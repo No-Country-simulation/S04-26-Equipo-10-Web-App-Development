@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "../../components/layout/simple/Header";
 import EstadoBadge from "../../components/ui/EstadoBadge";
 import PrioridadBadge from "../../components/ui/PrioridadBadge";
+import EditReportModal from "../../components/technician/EditReportModal ";
 
 // --- tipos ---
 type Estado = "Abierto" | "Asignado" | "En proceso" | "Cerrado";
@@ -27,11 +28,30 @@ const mockReportes: Reporte[] = [
 ];
 
 // --- página ---
-export default function TechniquePage() {
-  const [reportes] = useState<Reporte[]>(mockReportes);
+export default function TechnicianPage() {
+  const [reportes, setReportes] = useState<Reporte[]>(mockReportes);
 
-  const handleEditEstado = (id: number) => {
-    console.log("Editar estado:", id);
+  // Estado del modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<Reporte | null>(null);
+
+  // Abrir modal para un reporte específico
+  const openEditModal = (reporte: Reporte) => {
+    setSelectedReport(reporte);
+    setModalOpen(true);
+  };
+
+  // Manejar envío del modal
+  const handleEditSubmit = (data: { estado: string }) => {
+    if (!selectedReport) return;
+    setReportes(prev =>
+      prev.map(r =>
+        r.id === selectedReport.id
+          ? { ...r, estado: data.estado as Estado }
+          : r
+      )
+    );
+    setModalOpen(false);
   };
 
   return (
@@ -70,7 +90,7 @@ export default function TechniquePage() {
                     <td style={{ padding: "14px 16px", fontSize: 13, color: "#374151" }}>{r.tecnico}</td>
                     <td style={{ padding: "14px 16px", minWidth: 110 }}>
                       <button
-                        onClick={() => handleEditEstado(r.id)}
+                        onClick={() => openEditModal(r)}
                         style={{
                           padding: "6px 12px",
                           background: "#10b981",
@@ -93,6 +113,14 @@ export default function TechniquePage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de edición */}
+      <EditReportModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleEditSubmit}
+        initialEstado={selectedReport?.estado ?? ""}
+      />
     </div>
   );
 }

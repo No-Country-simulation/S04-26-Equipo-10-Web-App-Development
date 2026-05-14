@@ -5,6 +5,7 @@ import BarChart from "../../components/charts/BarChart";
 import KpiGrid from "../../components/charts/KpiGrid";
 import EstadoBadge from "../../components/ui/EstadoBadge";
 import PrioridadBadge from "../../components/ui/PrioridadBadge";
+import AreaModal from "../../components/manager/AreaModal";
 
 // --- tipos ---
 type Estado = "Abierto" | "Asignado" | "En proceso" | "Cerrado";
@@ -50,6 +51,11 @@ export default function ManagerPage() {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState<"dashboard" | "users">("dashboard");
 
+  // Estados para el modal de área
+  const [areaModalOpen, setAreaModalOpen] = useState(false);
+  const [areaModalMode, setAreaModalMode] = useState<"add" | "edit">("add");
+  const [areaModalInitial, setAreaModalInitial] = useState("");
+
   const handleNav = (tab: "dashboard" | "users") => {
     setActiveNav(tab);
     if (tab === "users") navigate("/manager/users");
@@ -57,36 +63,53 @@ export default function ManagerPage() {
   };
 
   const navLinks = [
-    {
-      label: "Dashboard",
-      path: "/manager",
-      active: activeNav === "dashboard",
-    },
-    {
-      label: "Gestión de usuarios",
-      path: "/manager/users",
-      active: activeNav === "users",
-    },
+    { label: "Dashboard", path: "/manager", active: activeNav === "dashboard" },
+    { label: "Gestión de usuarios", path: "/manager/users", active: activeNav === "users" },
   ];
+
+  // Handlers para abrir el modal en modo añadir o editar
+  const openAddArea = () => {
+    setAreaModalMode("add");
+    setAreaModalInitial("");
+    setAreaModalOpen(true);
+  };
+
+  const openEditArea = () => {
+    // Podrías establecer un nombre de área por defecto o dejarlo vacío
+    setAreaModalMode("edit");
+    setAreaModalInitial(""); // más adelante podrías pasar el nombre del área seleccionada
+    setAreaModalOpen(true);
+  };
+
+  const handleAreaSubmit = (nombre: string) => {
+    if (areaModalMode === "add") {
+      console.log("Área añadida:", nombre);
+      // Lógica para agregar área a la lista
+    } else {
+      console.log("Área modificada:", nombre);
+      // Lógica para modificar área
+    }
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", fontFamily: "Inter, sans-serif" }}>
-      {/* Header */}
-      <Header
-        userName="Alex Sterling"
-        userRole="Gerente"
-        navLinks={navLinks}
-      />
+      <Header userName="Alex Sterling" userRole="Gerente" navLinks={navLinks} />
 
       <div style={{ padding: "32px" }}>
         {/* Top row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#111827" }}>Métricas de reportes</h2>
           <div style={{ display: "flex", gap: 10 }}>
-            <button style={{ padding: "8px 16px", background: "#111827", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            <button
+              onClick={openAddArea}
+              style={{ padding: "8px 16px", background: "#111827", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
               + Añadir área
             </button>
-            <button style={{ padding: "8px 16px", background: "#10b981", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            <button
+              onClick={openEditArea}
+              style={{ padding: "8px 16px", background: "#10b981", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
               ✎ Modificar área
             </button>
           </div>
@@ -96,10 +119,7 @@ export default function ManagerPage() {
         <KpiGrid items={kpis} />
 
         {/* Bar chart */}
-          <BarChart
-          title="Gráfico de reportes"
-          data={barData}
-          />
+        <BarChart title="Gráfico de reportes" data={barData} />
 
         {/* Tabla */}
         <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
@@ -111,9 +131,7 @@ export default function ManagerPage() {
               <thead>
                 <tr style={{ background: "#7BC6B1" }}>
                   {["OPERADOR", "ESTADO", "PRIORIDAD", "TIPO", "DESCRIPCIÓN", "ÁREA", "FECHA", "HORA", "TÉCNICO ASIGNADO"].map(col => (
-                    <th key={col} style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#374151", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>
-                      {col}
-                    </th>
+                    <th key={col} style={{ padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#374151", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>{col}</th>
                   ))}
                 </tr>
               </thead>
@@ -136,6 +154,15 @@ export default function ManagerPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de área */}
+      <AreaModal
+        open={areaModalOpen}
+        mode={areaModalMode}
+        initialValue={areaModalInitial}
+        onClose={() => setAreaModalOpen(false)}
+        onSubmit={handleAreaSubmit}
+      />
     </div>
   );
 }

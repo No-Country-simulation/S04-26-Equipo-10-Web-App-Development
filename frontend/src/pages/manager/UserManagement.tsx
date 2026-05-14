@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/layout/manager/Header"; // o simple si preferís sin navLinks
+import Header from "../../components/layout/manager/Header";
 import KpiGrid from "../../components/charts/KpiGrid";
+import UserModal from "../../components/manager/UserModal";
 
 // --- tipos ---
 type Rol = "Operador" | "Operadora" | "Técnico" | "Técnica" | "Supervisor" | "Gerente";
@@ -26,11 +27,19 @@ const mockUsuarios: Usuario[] = [
   { id: 6, nombre: "Miguel", apellido: "Torres",    email: "migueltorres@email.com",   rol: "Técnico",   area: "Mantenimiento",activo: false },
 ];
 
+// --- áreas disponibles (extraídas del mock) ---
+const AREAS = [...new Set(mockUsuarios.map(u => u.area))];
+
 // --- página ---
 export default function UserManagement() {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState<"dashboard" | "users">("users");
   const [usuarios, setUsuarios] = useState<Usuario[]>(mockUsuarios);
+
+  // estados del modal
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [userModalMode, setUserModalMode] = useState<"create" | "edit" | "delete">("create");
+  const [selectedUser, setSelectedUser] = useState<Usuario | null>(null);
 
   const totalUsuarios = usuarios.length;
   const usuariosActivos = usuarios.filter(u => u.activo).length;
@@ -41,25 +50,66 @@ export default function UserManagement() {
     if (tab === "dashboard") navigate("/manager");
   };
 
-  const handleEliminar = (id: number) => {
-    setUsuarios(prev => prev.filter(u => u.id !== id));
+  // Abrir modal para añadir
+  const openAddUser = () => {
+    setUserModalMode("create");
+    setSelectedUser(null);
+    setUserModalOpen(true);
   };
 
-  const handleEditar = (id: number) => {
-    console.log("Editar usuario:", id);
+  // Abrir modal para editar
+  const openEditUser = (id: number) => {
+    const user = usuarios.find(u => u.id === id);
+    if (!user) return;
+    setSelectedUser(user);
+    setUserModalMode("edit");
+    setUserModalOpen(true);
   };
+
+  // Abrir modal para confirmar eliminación
+  const openDeleteUser = (id: number) => {
+    const user = usuarios.find(u => u.id === id);
+    if (!user) return;
+    setSelectedUser(user);
+    setUserModalMode("delete");
+    setUserModalOpen(true);
+  };
+
+  // Manejar el submit del modal (crear, editar, eliminar)
+  const handleUserSubmit = (formData: { nombre: string; email: string; contrasena: string; rol: string; area: string }) => {
+    if (userModalMode === "create") {
+      const nuevoUsuario: Usuario = {
+        id: Math.max(0, ...usuarios.map(u => u.id)) + 1,
+        nombre: formData.nombre,
+        apellido: "", // en el modal actual no pedimos apellido, podrías agregarlo después
+        email: formData.email,
+        rol: formData.rol as Rol,
+        area: formData.area,
+        activo: true,
+      };
+      setUsuarios(prev => [...prev, nuevoUsuario]);
+    } else if (userModalMode === "edit" && selectedUser) {
+      setUsuarios(prev =>
+        prev.map(u =>
+          u.id === selectedUser.id
+            ? { ...u, nombre: formData.nombre, email: formData.email, rol: formData.rol as Rol, area: formData.area }
+            : u
+        )
+      );
+    } else if (userModalMode === "delete" && selectedUser) {
+      setUsuarios(prev => prev.filter(u => u.id !== selectedUser.id));
+    }
+    setUserModalOpen(false);
+  };
+
+  // Mapear initialData para UserModal
+  const initialData = selectedUser
+    ? { nombre: selectedUser.nombre, email: selectedUser.email, rol: selectedUser.rol, area: selectedUser.area }
+    : {};
 
   const navLinks = [
-    {
-      label: "Dashboard",
-      path: "/manager",
-      active: activeNav === "dashboard",
-    },
-    {
-      label: "Gestión de usuarios",
-      path: "/manager/users",
-      active: activeNav === "users",
-    },
+    { label: "Dashboard", path: "/manager", active: activeNav === "dashboard" },
+    { label: "Gestión de usuarios", path: "/manager/users", active: activeNav === "users" },
   ];
 
   const kpiItems = [
@@ -70,19 +120,16 @@ export default function UserManagement() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", fontFamily: "Inter, sans-serif" }}>
-      <Header
-        userName="Alex Sterling"
-        userRole="Gerente"
-        navLinks={navLinks}
-      />
+      <Header userName="Alex Sterling" userRole="Gerente" navLinks={navLinks} />
 
       <div style={{ padding: "32px" }}>
         {/* Top row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#111827" }}>Gestión de usuarios</h2>
-          </div>
-          <button style={{ padding: "8px 16px", background: "#111827", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#111827" }}>Gestión de usuarios</h2>
+          <button
+            onClick={openAddUser}
+            style={{ padding: "8px 16px", background: "#111827", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+          >
             + Añadir usuario
           </button>
         </div>
@@ -117,14 +164,14 @@ export default function UserManagement() {
                     <td style={{ padding: "14px 16px" }}>
                       <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                         <button
-                          onClick={() => handleEditar(u.id)}
+                          onClick={() => openEditUser(u.id)}
                           style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#6b7280", padding: 0 }}
                           title="Editar"
                         >
                           ✏️
                         </button>
                         <button
-                          onClick={() => handleEliminar(u.id)}
+                          onClick={() => openDeleteUser(u.id)}
                           style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#ef4444", padding: 0 }}
                           title="Eliminar"
                         >
@@ -139,6 +186,16 @@ export default function UserManagement() {
           </div>
         </div>
       </div>
+
+      {/* Modal de usuario */}
+      <UserModal
+        open={userModalOpen}
+        mode={userModalMode}
+        initialData={initialData}
+        areas={AREAS}
+        onClose={() => setUserModalOpen(false)}
+        onSubmit={handleUserSubmit}
+      />
     </div>
   );
 }
