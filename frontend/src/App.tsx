@@ -1,122 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import MainLayout from './components/layout/MainLayout';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import RoleGuard from './components/auth/RoleGuard';
+import { useAuthStore } from './store/authStore';
+import LoginPage from './pages/auth/LoginPage';
+import { Outlet } from 'react-router-dom';
+
+function DummyPage({ title }: { title: string }) {
+  return (
+    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">{title}</h1>
+      <p className="text-gray-600">Este es un componente de prueba para la ruta: {title}.</p>
+    </div>
+  );
+}
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <Toaster richColors position="top-right" />
+      <Router>
+        <Routes>
+          {/* Public Route */}
+          <Route path="/login" element={<LoginPage />} />
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute><MainLayout><OutletWrapper /></MainLayout></ProtectedRoute>}>
+            <Route path="/" element={<HomeRedirect />} />
+            <Route path="/reportar" element={<RoleGuard allowedRoles={['Operador']} redirectOnFail><DummyPage title="Reportar incidente" /></RoleGuard>} />
+            <Route path="/mis-reportes" element={<RoleGuard allowedRoles={['Operador']} redirectOnFail><DummyPage title="Mis reportes" /></RoleGuard>} />
+            <Route path="/mis-tareas" element={<RoleGuard allowedRoles={['Técnico']} redirectOnFail><DummyPage title="Mis tareas" /></RoleGuard>} />
+            <Route path="/reportes" element={<RoleGuard allowedRoles={['Supervisor']} redirectOnFail><DummyPage title="Reportes" /></RoleGuard>} />
+            <Route path="/metricas-de-reportes" element={<RoleGuard allowedRoles={['Gerente']} redirectOnFail><DummyPage title="Métricas de reportes" /></RoleGuard>} />
+            <Route path="/usuarios" element={<RoleGuard allowedRoles={['Gerente']} redirectOnFail><DummyPage title="Gestión de usuarios" /></RoleGuard>} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+function OutletWrapper() {
+  return <Outlet />;
+}
+
+function HomeRedirect() {
+  const { user } = useAuthStore();
+  if (!user) return null;
+
+  switch (user.role) {
+    case 'Operador':
+      return <Navigate to="/reportar" replace />;
+    case 'Técnico':
+      return <Navigate to="/mis-tareas" replace />;
+    case 'Supervisor':
+      return <Navigate to="/reportes" replace />;
+    case 'Gerente':
+      return <Navigate to="/metricas-de-reportes" replace />;
+    default:
+      return <Navigate to="/login" replace />;
+  }
+}
+
+export default App;
