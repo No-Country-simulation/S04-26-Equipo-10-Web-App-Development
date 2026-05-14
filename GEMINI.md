@@ -1,23 +1,30 @@
 # OpsCore Project Memory
 
 ## 🟢 Project Status
-- **Phase**: Initial Setup
-- **Current Branch**: `feat/init-frontend`
+- **Phase**: Authentication UI & Hooks
+- **Current Branch**: `feat/hook-auth`
 - **Frontend**: Initialized (Vite + React + TS)
 - **Backend**: Express.js (Modular Domain Architecture)
 
 ## 📍 Active Tasks
 - [x] Initialize Frontend with Vite + React + TypeScript <!-- id: 0 -->
-- [ ] Setup Design System (Vanilla CSS + Modern Aesthetics) <!-- id: 1 -->
-- [ ] Configure Axios/Fetch for Backend Integration <!-- id: 2 -->
+- [x] Setup Design System (Tailwind CSS + Modern Aesthetics) <!-- id: 1 -->
+- [x] Implement Base Layout (`feat/base-layout`) <!-- id: 5 -->
 - [ ] Implement Basic Routing (React Router) <!-- id: 3 -->
+- [ ] Configure Axios/Fetch for Backend Integration <!-- id: 2 -->
+- [x] Implement Authentication Hooks <!-- id: 4 -->
+- [ ] Fix/Implement Backend Modular Structure (Missing `./routes`) <!-- id: 6 -->
 
 ## 🛠️ Environment Status
 - **OS**: Windows
 - **Node Version**: v20+ (Target)
-- **Backend Path**: `C:\Desarrollo\S04-26-Equipo-10-Web-App-Development-1\backend`
-- **Frontend Path**: `C:\Desarrollo\S04-26-Equipo-10-Web-App-Development-1\frontend`
+- **Backend Path**: `C:\Desarrollo\OpsCore\backend`
+- **Frontend Path**: `C:\Desarrollo\OpsCore\frontend`
 
 ## 📚 Architectural Notes
 - **Backend**: Modular by domain (`modules/`). Route -> Controller -> Service -> Repository -> DB.
-- **Frontend**: React-based with focus on premium aesthetics and dynamic design.
+- **Frontend**: React-based (Tailwind CSS, Zustand, React Router), focus on premium aesthetics and dynamic design.
+
+## 📝 Session Compact
+- **Commit**: `feat(auth): implement RBAC infrastructure and Zustand persist` (Created ProtectedRoute, RoleGuard, and refactored authStore to align with backend docs).
+- **Previous Commit**: `feat: implement responsive MainLayout with RBAC (dev mode)` (Tailwind config, responsive DesktopNav, MobileNav, Zustand auth store).
