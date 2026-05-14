@@ -1,15 +1,21 @@
 INSERT OR IGNORE INTO roles (id, name) VALUES
-(1, 'OPERATOR'),
-(2, 'TECHNICIAN'),
+(1, 'OPERADOR'),
+(2, 'TECNICO'),
 (3, 'SUPERVISOR'),
-(4, 'MANAGER');
+(4, 'GERENTE_PLANTA');
 
 INSERT OR IGNORE INTO status (id, name) VALUES
-(1, 'CREATED'),
-(2, 'ASSIGNED'),
-(3, 'IN_PROGRESS'),
-(4, 'SOLVED'),
-(5, 'CLOSED');
+(1, 'ABIERTO'),
+(2, 'ASIGNADO'),
+(3, 'EN_PROCESO'),
+(4, 'RESUELTO'),
+(5, 'CERRADO');
+
+INSERT OR IGNORE INTO priorities (id, name) VALUES
+(1, 'ALTA'),
+(2, 'MEDIA'),
+(3, 'BAJA'),
+(4, 'NO_ASIGNADA');
 
 
 INSERT OR IGNORE INTO areas (id, name) VALUES
