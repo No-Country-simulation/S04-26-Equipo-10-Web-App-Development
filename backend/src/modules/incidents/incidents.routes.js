@@ -30,6 +30,12 @@ router.patch(
 	requireRole(3, 4),
 	asyncHandler(incidentsController.resolveIncident.bind(incidentsController)),
 )
+router.patch(
+	"/:id/start",
+	requireAuth,
+	requireRole(2),
+	asyncHandler(incidentsController.startIncident.bind(incidentsController)),
+)
 router.get(
 	"/",
 	requireAuth,
