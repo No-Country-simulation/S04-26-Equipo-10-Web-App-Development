@@ -48,7 +48,7 @@ export default class IncidentsRepository {
 		`
 
 		return new Promise((resolve, reject) => {
-			this.db.run(query, [techId, incidentId], (err, row) => {
+			this.db.run(query, [techId, incidentId], function (err) {
 				if (err) return reject(err)
 				resolve({ changes: this.changes })
 			})
@@ -112,10 +112,10 @@ export default class IncidentsRepository {
 	async resolveIncident(id, user) {
 		return new Promise((resolve, reject) => {
 			this.db.run(
-				`UPDATE incidents SET closed_by = ?, closed_at = CURRENT_TIMESTAMP `,
-				Number(user.id),
+				`UPDATE incidents SET closed_by = ?, closed_at = CURRENT_TIMESTAMP WHERE id = ? `,
+				[Number(user.id),id],
 				function (err) {
-					if (err) reject(err)
+					if (err) return reject(err)
 					resolve({ changes: this.changes })
 				},
 			)

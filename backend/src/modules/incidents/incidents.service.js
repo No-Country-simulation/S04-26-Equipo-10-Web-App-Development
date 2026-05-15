@@ -76,12 +76,12 @@ export default class IncidentsService {
 		return incidents
 	}
 	async assignTechnician(techId, incidentId) {
-		const incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+		const incident = await this.IncidentsRepository.getIncidentById(incidentId)
 		const tech = await this.IncidentsRepository.getUserById(techId)
 		if (tech.role_id == 2 && tech.area_id == incident.area_id) {
 			await this.IncidentsRepository.assignTech(techId, incidentId)
-			incident = await this.IncidentsRepository.getIncidentsById(incidentId)
-			return incident
+			const updatedIncident = await this.IncidentsRepository.getIncidentById(incidentId)
+			return updatedIncident
 		}
 		throw new BadRequestError("Technician and incident don´t match")
 	}
