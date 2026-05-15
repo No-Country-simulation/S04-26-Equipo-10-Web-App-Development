@@ -1,4 +1,4 @@
-import { BadRequestError } from "../../errors/errors.js"
+import { BadRequestError, ConflictError, } from "../../errors/errors.js"
 
 export default class IncidentsService {
 	constructor(IncidentsRepository) {
@@ -17,15 +17,15 @@ export default class IncidentsService {
 
 		const offset = (safePage - 1) * safeLimit
 
-		switch (Number(user.role)) {
+		switch (Number(user.role_id)) {
 			case 1:
-				created_by = 1
+				created_by = user.user_id
 				conditions.push("created_by = ?")
 				values.push(Number(created_by))
 				break
 
 			case 2:
-				assigned_to = 2
+				assigned_to = user.user_id
 				conditions.push("assigned_to = ?")
 				values.push(Number(assigned_to))
 				break
@@ -76,12 +76,12 @@ export default class IncidentsService {
 		return incidents
 	}
 	async assignTechnician(techId, incidentId) {
-		const incident = await this.IncidentsRepository.getIncidentsById(incidentId)
+		const incident = await this.IncidentsRepository.getIncidentById(incidentId)
 		const tech = await this.IncidentsRepository.getUserById(techId)
 		if (tech.role_id == 2 && tech.area_id == incident.area_id) {
 			await this.IncidentsRepository.assignTech(techId, incidentId)
-			incident = await this.IncidentsRepository.getIncidentsById(incidentId)
-			return incident
+			const updatedIncident = await this.IncidentsRepository.getIncidentById(incidentId)
+			return updatedIncident
 		}
 		throw new BadRequestError("Technician and incident don´t match")
 	}
@@ -112,5 +112,24 @@ export default class IncidentsService {
 	}
 	async resolveIncident(id, user) {
 		await this.IncidentsRepository.resolveIncident(id, user)
+	}
+	async startIncident(incidentId, user) {
+		const incident = await this.IncidentsRepository.getIncidentById(incidentId)
+
+		if (!incident) {
+			throw new BadRequestError("Incident not found")
+		}
+
+		if (incident.assigned_to !== user.user_id) {
+			throw new BadRequestError("You are not assigned to this incident")
+		}
+
+		if (incident.status_id !== 2) {
+			throw new ConflictError("Incident is not assigned")
+		}
+
+		await this.IncidentsRepository.startIncident(incidentId)
+
+		return await this.IncidentsRepository.getIncidentById(incidentId)
 	}
 }

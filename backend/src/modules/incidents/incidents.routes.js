@@ -5,7 +5,6 @@ import IncidentsService from "./incidents.service.js"
 import IncidentsRepository from "./incidents.repository.js"
 import ResolutionsService from "../resolutions/resolutions.service.js"
 import ResolutionsRepository from "../resolutions/resolutions.repository.js"
-import { requireAuth } from "../../middlewares/auth.middleware.js"
 import { requireAuth, requireRole } from "../../middlewares/auth.middleware.js"
 import { asyncHandler } from "../../middlewares/asyncHandler.middleware.js"
 
@@ -30,6 +29,12 @@ router.patch(
 	requireAuth,
 	requireRole(3, 4),
 	asyncHandler(incidentsController.resolveIncident.bind(incidentsController)),
+)
+router.patch(
+	"/:id/start",
+	requireAuth,
+	requireRole(2),
+	asyncHandler(incidentsController.startIncident.bind(incidentsController)),
 )
 router.get(
 	"/",
